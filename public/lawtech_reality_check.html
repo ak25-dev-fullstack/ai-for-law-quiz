@@ -1,0 +1,2299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UK Lawtech Reality Check</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0d1117;
+      --card:     #161b22;
+      --coral:    #f4845f;
+      --blue:     #4a9eff;
+      --red:      #e05252;
+      --amber:    #f0a500;
+      --green:    #3dba6f;
+      --text:     #e0e0e0;
+      --muted:    #8b949e;
+      --border:   #30363d;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* ── STICKY HEADER ─────────────────────────────────────────── */
+    #site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(13, 17, 23, 0.97);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .kpi-card {
+      padding: 8px 12px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .kpi-card:last-child { border-right: none; }
+
+    .kpi-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    .kpi-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--coral);
+      line-height: 1.2;
+    }
+
+    .kpi-sub {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0 12px;
+      overflow-x: auto;
+    }
+
+    .site-nav a {
+      display: block;
+      padding: 8px 14px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      transition: color 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+
+    .site-nav a:hover {
+      color: var(--text);
+      border-bottom-color: var(--coral);
+    }
+
+    /* ── MOBILE: non-sticky header ──────────────────────────────── */
+    @media (max-width: 768px) {
+      #site-header {
+        position: static;
+        backdrop-filter: none;
+      }
+      .kpi-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .kpi-card:nth-child(2) { border-right: none; }
+      .kpi-card:nth-child(3) { border-top: 1px solid var(--border); }
+      .kpi-card:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
+      .site-nav { padding: 0 8px; }
+      .site-nav a { padding: 7px 10px; font-size: 11px; }
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────────────────── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    section {
+      padding: 60px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--coral);
+      margin-bottom: 6px;
+    }
+
+    .section-subtitle {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    /* ── CARDS ──────────────────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    /* ── MAP SECTION ────────────────────────────────────────────── */
+    #map-section {
+      padding: 60px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .map-wrapper {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    #uk-map {
+      height: 500px;
+      width: 100%;
+      background: #0d1117;
+    }
+
+    .map-callout {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      z-index: 400;
+      background: #161b22;
+      border: 1px solid var(--coral);
+      border-radius: 8px;
+      padding: 12px 16px;
+      max-width: 320px;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .map-callout strong { color: var(--coral); }
+
+    .map-legend {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 400;
+      background: #161b22;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .legend-row:last-child { margin-bottom: 0; }
+
+    .legend-dot {
+      border-radius: 50%;
+      border: 1.5px solid white;
+      flex-shrink: 0;
+    }
+
+    /* ── CHART WRAPPERS ──────────────────────────────────────────── */
+    .chart-scroll {
+      overflow-x: auto;
+    }
+
+    .chart-scroll canvas {
+      min-width: 500px;
+    }
+
+    /* Investment chart is horizontal bars — needs height, not width */
+    #investment-chart {
+      min-width: 0;
+      width: 100% !important;
+      height: 340px !important;
+    }
+
+    @media (max-width: 768px) {
+      #investment-chart {
+        height: 420px !important;
+      }
+    }
+
+    .annotation-text {
+      margin-top: 16px;
+      padding: 14px 18px;
+      background: rgba(74, 158, 255, 0.07);
+      border-left: 3px solid var(--blue);
+      border-radius: 0 6px 6px 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .annotation-text strong { color: var(--text); }
+
+    /* ── BENCHMARK SECTION ──────────────────────────────────────── */
+    #benchmark {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      max-width: 100%;
+    }
+
+    #benchmark .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 20px;
+    }
+
+    #benchmark .section-title {
+      font-size: 36px;
+    }
+
+    .callout-labels {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .callout-label {
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .callout-label .cl-badge {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .cl-green  { background: rgba(61, 186, 111, 0.1); border: 1px solid rgba(61,186,111,0.3); }
+    .cl-amber  { background: rgba(240, 165, 0, 0.1);  border: 1px solid rgba(240,165,0,0.3);  }
+    .cl-red    { background: rgba(224, 82, 82, 0.1);  border: 1px solid rgba(224,82,82,0.3);  }
+
+    /* ── DECLINING CHAIN ─────────────────────────────────────────── */
+    .chain-wrap {
+      margin-top: 40px;
+    }
+
+    .chain-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 20px;
+    }
+
+    .chain-row {
+      display: grid;
+      grid-template-columns: 200px 1fr 60px auto;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .chain-label {
+      font-size: 13px;
+      color: var(--text);
+      text-align: right;
+      padding-right: 8px;
+      line-height: 1.3;
+    }
+
+    .chain-bar-wrap {
+      height: 26px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .chain-bar {
+      height: 100%;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.7);
+      transition: width 0.6s ease;
+    }
+
+    .chain-pct {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .chain-note {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .chain-caption {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+      padding: 12px 16px;
+      background: rgba(224,82,82,0.06);
+      border-left: 3px solid var(--red);
+      border-radius: 0 6px 6px 0;
+    }
+
+    /* ── LEGAL-BENCH TABLE ───────────────────────────────────────── */
+    .lb-table-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    th {
+      background: #1c2128;
+      color: var(--coral);
+      text-align: left;
+      padding: 14px 16px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .row-high-risk {
+      border-left: 3px solid var(--red);
+      background: rgba(224, 82, 82, 0.04);
+    }
+
+    .row-normal td:first-child {
+      border-left: 3px solid transparent;
+    }
+
+    .risk-badge {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--red);
+      background: rgba(224,82,82,0.12);
+      border: 1px solid rgba(224,82,82,0.3);
+      border-radius: 4px;
+      padding: 2px 7px;
+      white-space: nowrap;
+    }
+
+    .lb-blockquote {
+      border-left: 3px solid var(--amber);
+      background: rgba(240,165,0,0.06);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      font-size: 14px;
+      font-style: italic;
+      color: var(--text);
+      margin-bottom: 28px;
+      line-height: 1.7;
+    }
+
+    /* ── TIMELINE ────────────────────────────────────────────────── */
+    .timeline {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0;
+      padding: 40px 0 20px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 56px;
+      left: 30px;
+      right: 30px;
+      height: 2px;
+      background: var(--border);
+      z-index: 0;
+    }
+
+    .tl-node {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      padding: 0 8px;
+    }
+
+    .tl-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 3px solid var(--bg);
+      flex-shrink: 0;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .tl-year {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .tl-text {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .tl-quote {
+      margin-top: 36px;
+      font-style: italic;
+      font-size: 14px;
+      color: var(--muted);
+      border-left: 3px solid var(--green);
+      padding: 14px 20px;
+      background: rgba(61,186,111,0.05);
+      border-radius: 0 8px 8px 0;
+      line-height: 1.7;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 20px;
+      text-align: center;
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    footer strong { color: var(--text); }
+
+    /* ── MOBILE ─────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .kpi-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .kpi-card:nth-child(2) { border-right: none; }
+      .kpi-card:nth-child(3) { border-right: 1px solid var(--border); }
+
+      .site-nav { flex-wrap: wrap; padding: 4px 8px; }
+      .site-nav a { padding: 8px 10px; font-size: 12px; }
+
+      .section-title { font-size: 22px; }
+      #benchmark .section-title { font-size: 26px; }
+
+      .callout-labels { grid-template-columns: 1fr; }
+
+      .chain-row {
+        grid-template-columns: 130px 1fr 50px;
+      }
+      .chain-note { display: none; }
+
+      .timeline {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0;
+        gap: 0;
+      }
+
+      .timeline::before {
+        top: 0;
+        bottom: 0;
+        left: 9px;
+        right: auto;
+        width: 2px;
+        height: auto;
+      }
+
+      .tl-node {
+        flex-direction: row;
+        text-align: left;
+        align-items: flex-start;
+        padding: 0 0 28px 30px;
+        flex: unset;
+        width: 100%;
+      }
+
+      .tl-dot {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin-bottom: 0;
+      }
+
+      .tl-content { flex: 1; }
+
+      .map-callout {
+        max-width: 180px;
+        font-size: 11px;
+        padding: 8px 10px;
+        bottom: 10px;
+        left: 10px;
+        line-height: 1.4;
+      }
+      .map-callout strong { font-size: 11px; }
+      .map-legend { font-size: 10px; padding: 6px 10px; top: 10px; right: 10px; }
+    }
+
+    /* Leaflet dark overrides */
+    .leaflet-container { background: #1a2030 !important; }
+    #uk-map { filter: brightness(0.75) saturate(0.65); }
+
+    /* Custom tooltip */
+    .custom-tooltip {
+      background: rgba(22,27,34,0.97) !important;
+      border: 1px solid #f4845f !important;
+      color: #e0e0e0 !important;
+      border-radius: 8px !important;
+      padding: 10px 14px !important;
+      font-size: 13px !important;
+      line-height: 1.7 !important;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+    }
+
+    .custom-tooltip::before { display: none !important; }
+    .custom-tooltip b { color: #f4845f; }
+
+    /* ── COLLAPSIBLE PANELS (Section 6) ──────────────────────────── */
+    .section-intro {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 28px;
+      padding: 16px 20px;
+      background: rgba(244,132,95,0.05);
+      border-left: 3px solid var(--coral);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .panel-details {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .panel-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      background: var(--card);
+      cursor: pointer;
+      list-style: none;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      gap: 12px;
+      user-select: none;
+      transition: background 0.15s;
+    }
+
+    .panel-summary:hover { background: #1c2128; }
+    .panel-summary::-webkit-details-marker { display: none; }
+
+    .panel-summary-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .panel-tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 9px;
+      border-radius: 20px;
+      border: 1px solid;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .panel-tag-a { color: var(--red);   border-color: rgba(224,82,82,0.4);  background: rgba(224,82,82,0.08);  }
+    .panel-tag-b { color: var(--amber); border-color: rgba(240,165,0,0.4);  background: rgba(240,165,0,0.08);  }
+    .panel-tag-c { color: var(--blue);  border-color: rgba(74,158,255,0.4); background: rgba(74,158,255,0.08); }
+
+    .panel-chevron {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      color: var(--muted);
+      transition: transform 0.25s;
+    }
+
+    .panel-details[open] .panel-chevron { transform: rotate(180deg); }
+
+    .panel-body {
+      padding: 28px 24px;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    /* ── HALLUCINATION TABLE (Sub-panel A) ───────────────────────── */
+    .halluc-table { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+    .halluc-table table { font-size: 13.5px; }
+    .halluc-table th:first-child { width: 30%; }
+    .halluc-type-name { font-weight: 700; color: var(--text); }
+    .halluc-type-def  { font-size: 12px; color: var(--muted); margin-top: 3px; font-style: italic; }
+
+    .red-callout {
+      margin-top: 20px;
+      padding: 14px 18px;
+      background: rgba(224,82,82,0.08);
+      border-left: 3px solid var(--red);
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* ── ROOT CAUSE GRID (Sub-panel B) ───────────────────────────── */
+    .root-cause-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .stage-column { display: flex; flex-direction: column; gap: 10px; }
+
+    .stage-header {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--coral);
+      padding: 9px 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      text-align: center;
+    }
+
+    .cause-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 13px;
+      flex: 1;
+    }
+
+    .cause-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      margin-bottom: 7px;
+    }
+
+    .sev-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .sev-high { background: var(--red);   box-shadow: 0 0 0 2px rgba(224,82,82,0.25);  }
+    .sev-med  { background: var(--amber); box-shadow: 0 0 0 2px rgba(240,165,0,0.25);   }
+
+    .cause-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .cause-legal {
+      font-size: 11.5px;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.5;
+      padding-left: 18px;
+    }
+
+    .cause-card.rag-card {
+      border-color: rgba(240,165,0,0.35);
+      background: rgba(240,165,0,0.04);
+    }
+
+    .rag-note {
+      margin-top: 20px;
+      padding: 16px 20px;
+      background: rgba(240,165,0,0.06);
+      border-left: 3px solid var(--amber);
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    /* ── SYCOPHANCY CARD (Sub-panel C) ───────────────────────────── */
+    .syco-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 24px;
+      margin-bottom: 22px;
+    }
+
+    .syco-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .syco-card p {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+
+    .why-dangerous {
+      margin: 20px 0 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .syco-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .syco-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.55;
+      padding: 10px 14px;
+      background: rgba(224,82,82,0.05);
+      border: 1px solid rgba(224,82,82,0.15);
+      border-radius: 7px;
+    }
+
+    .syco-list li::before {
+      content: '⚠';
+      color: var(--red);
+      flex-shrink: 0;
+    }
+
+    /* ── RISK MATRIX ─────────────────────────────────────────────── */
+    .risk-matrix-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .risk-matrix { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+
+    .risk-matrix th {
+      background: #1c2128;
+      color: var(--coral);
+      text-align: center;
+      padding: 12px 16px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .risk-matrix th:first-child {
+      text-align: left;
+      color: var(--muted);
+      background: #161b22;
+    }
+
+    .risk-matrix td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      vertical-align: middle;
+      color: var(--text);
+    }
+
+    .risk-matrix td:first-child {
+      text-align: left;
+      font-weight: 600;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .risk-matrix tr:last-child td { border-bottom: none; }
+
+    .cell-safe   { color: #3dba6f; font-size: 20px; }
+    .cell-warn   { color: var(--amber); font-size: 13px; }
+    .cell-danger {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--red);
+      background: rgba(224,82,82,0.07);
+    }
+
+    .source-note {
+      margin-top: 22px;
+      font-size: 12px;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.65;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── CHECKLIST PANEL (Section 7) ─────────────────────────────── */
+    .checklist-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .checklist-item:last-child { border-bottom: none; }
+
+    .check-box {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(74,158,255,0.45);
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      background: rgba(74,158,255,0.06);
+    }
+
+    /* ── RISK CLAIM CARDS (Section 7) ───────────────────────────── */
+    .risk-claims-wrap { display: flex; flex-direction: column; gap: 10px; }
+
+    .risk-claim {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #161b22;
+      border-left: 3px solid var(--coral);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .risk-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+
+    .risk-claim strong { display: block; margin-bottom: 5px; color: var(--text); }
+
+    .risk-claim p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .risk-claim .src-btn { margin-left: 4px; margin-top: 6px; }
+
+    /* ── MOBILE ADDITIONS ────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .root-cause-grid { grid-template-columns: 1fr; }
+      .panel-body { padding: 20px 16px; }
+      .panel-summary { padding: 14px 16px; font-size: 14px; }
+      .checklist-item { padding: 14px 16px; font-size: 13px; }
+
+      /* Benchmark chart: fill width, no forced horizontal scroll */
+      #benchmark-chart { min-width: 0; width: 100% !important; }
+
+      /* Callout labels: stack vertically */
+      .callout-labels { grid-template-columns: 1fr; gap: 10px; margin-top: 16px; }
+
+      /* Chain row: 3-col layout, hide prose note */
+      .chain-row { grid-template-columns: 100px 1fr 48px; }
+      .chain-note { display: none; }
+      .chain-label { font-size: 11px; padding-right: 4px; }
+      .chain-pct { font-size: 12px; }
+
+      /* Legal-bench table: compact text and padding */
+      table { font-size: 11px; }
+      th { padding: 8px 8px; font-size: 10px; }
+      td { padding: 8px 8px; line-height: 1.4; }
+    }
+
+    /* ── SOURCE BUTTONS ──────────────────────────────────────────── */
+    .src-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 9px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #4a9eff;
+      background: #1e2a38;
+      border: 1px solid #4a9eff;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+      vertical-align: middle;
+      line-height: 1.6;
+      font-family: inherit;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .src-btn:hover {
+      background: rgba(74,158,255,0.2);
+      border-color: #7ab8ff;
+      color: #7ab8ff;
+    }
+
+    /* Amber "synthesis" variant — not a primary source */
+    .src-btn-synthesis {
+      color: var(--amber);
+      background: rgba(240,165,0,0.08);
+      border-color: var(--amber);
+    }
+
+    .src-btn-synthesis:hover {
+      background: rgba(240,165,0,0.2);
+      border-color: #ffc340;
+      color: #ffc340;
+    }
+
+    /* KPI cards: button sits on its own line */
+    .kpi-card .src-btn {
+      margin-top: 8px;
+      display: flex;
+      width: fit-content;
+    }
+
+    /* Tight row of source buttons (used at bottom of panels) */
+    .src-btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .src-btn-row-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-right: 2px;
+      font-style: italic;
+    }
+
+    /* ── SOURCE DRAWER ───────────────────────────────────────────── */
+    .src-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      background: rgba(13,17,23,0.72);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s;
+    }
+
+    .src-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .src-drawer {
+      width: 100%;
+      max-width: 680px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-bottom: none;
+      border-radius: 16px 16px 0 0;
+      padding: 8px 28px 36px;
+      max-height: 72vh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      position: relative;
+    }
+
+    .src-backdrop.open .src-drawer {
+      transform: translateY(0);
+    }
+
+    .src-drawer-handle {
+      width: 40px;
+      height: 4px;
+      background: #30363d;
+      border-radius: 2px;
+      margin: 12px auto 20px;
+    }
+
+    .src-drawer-close {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid #30363d;
+      background: transparent;
+      color: #8b949e;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      line-height: 1;
+      font-family: inherit;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .src-drawer-close:hover { background: #30363d; color: #e0e0e0; }
+
+    .src-drawer-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #4a9eff;
+      margin-bottom: 8px;
+    }
+
+    .src-drawer-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #e0e0e0;
+      line-height: 1.4;
+      margin-bottom: 5px;
+      padding-right: 36px;
+    }
+
+    .src-drawer-authors {
+      font-size: 13px;
+      color: #8b949e;
+      margin-bottom: 2px;
+    }
+
+    .src-drawer-meta {
+      font-size: 12px;
+      color: #8b949e;
+      margin-bottom: 16px;
+    }
+
+    .src-drawer-contribution {
+      font-size: 13.5px;
+      color: var(--coral);
+      font-style: italic;
+      line-height: 1.65;
+      padding: 12px 16px;
+      background: rgba(244,132,95,0.07);
+      border-left: 3px solid var(--coral);
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 20px;
+    }
+
+    .src-drawer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: rgba(74,158,255,0.1);
+      border: 1px solid rgba(74,158,255,0.4);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4a9eff;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .src-drawer-link:hover { background: rgba(74,158,255,0.2); }
+
+    .src-drawer-nolink {
+      font-size: 12px;
+      color: #8b949e;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .src-drawer { padding: 8px 18px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STICKY HEADER
+═══════════════════════════════════════════════════════════════ -->
+<header id="site-header">
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <span class="kpi-label">UK Lawtech Companies Tracked</span>
+      <span class="kpi-value">376</span>
+      <span class="kpi-sub">🗺 Companies across all regions</span>
+      <button class="src-btn" onclick="openSource('lawtechEcosystem_2025')">📄 LawtechUK, 2025</button>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Raised by UK-Founded Companies</span>
+      <span class="kpi-value">£1.7B</span>
+      <span class="kpi-sub">💷 Total capital raised</span>
+      <button class="src-btn" onclick="openSource('lawtechEcosystem_2025')">📄 LawtechUK, 2025</button>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Agentic AI Projects Scrapped by 2027</span>
+      <span class="kpi-value">40%+</span>
+      <span class="kpi-sub">⚠️ Gartner forecast</span>
+      <button class="src-btn" onclick="openSource('gartner_2025')">📄 Gartner / Reuters, 2025</button>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Real-World AI Agent Task Resolution</span>
+      <span class="kpi-value">&lt;25%</span>
+      <span class="kpi-sub">🤖 SWE-Bench PRO commercial score</span>
+      <button class="src-btn" onclick="openSource('sweBenchPro')">📄 Deng & Da et al., 2025</button>
+    </div>
+  </div>
+  <nav class="site-nav">
+    <a href="#map">Map</a>
+    <a href="#investment">Investment</a>
+    <a href="#benchmark">Benchmark</a>
+    <a href="#legalbench">Legal-Bench</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#risk-taxonomy">Risk Taxonomy</a>
+    <a href="#responsible-adoption">Responsible Adoption</a>
+  </nav>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 1 — MAP
+═══════════════════════════════════════════════════════════════ -->
+<section id="map-section">
+  <h2 class="section-title" id="map">UK Lawtech Ecosystem Map</h2>
+  <p class="section-subtitle">Circle size = share of UK lawtech companies · Colour = investment density · Hover for detail</p>
+
+  <div class="map-wrapper">
+    <div id="uk-map"></div>
+
+    <div class="map-callout">
+      <strong>London dominates — but not where it counts most.</strong><br>
+      London holds 60% of companies but only 36.7% of H2 2025 investment value — regional companies are raising bigger rounds.
+      <br><button class="src-btn" style="margin-top:8px" onclick="openSource('lawtechH2_2025')">📄 LawtechUK, 2025</button>
+    </div>
+
+    <div class="map-legend">
+      <div style="font-size:11px;font-weight:700;color:var(--coral);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">Legend</div>
+      <div class="legend-row">
+        <div class="legend-dot" style="width:22px;height:22px;background:#f4845f;"></div>
+        <span>High company density</span>
+      </div>
+      <div class="legend-row">
+        <div class="legend-dot" style="width:14px;height:14px;background:#4a9eff;"></div>
+        <span>Lower company density</span>
+      </div>
+      <div class="legend-row" style="margin-top:4px;border-top:1px solid var(--border);padding-top:8px;">
+        <div style="display:flex;gap:5px;align-items:center;">
+          <div class="legend-dot" style="width:20px;height:20px;background:rgba(244,132,95,0.3);"></div>
+          <div class="legend-dot" style="width:10px;height:10px;background:rgba(244,132,95,0.3);"></div>
+        </div>
+        <span>Size = company share %</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 2 — INVESTMENT
+═══════════════════════════════════════════════════════════════ -->
+<section id="investment">
+  <h2 class="section-title">Where deals happen ≠ where money goes</h2>
+  <p class="section-subtitle">London dominates deal count; Scotland and East of England punch above their weight on value</p>
+
+  <div class="card">
+    <div class="chart-scroll">
+      <canvas id="investment-chart" height="320"></canvas>
+    </div>
+    <div class="annotation-text">
+      <strong>London</strong> has 60% of companies but 70% of H2 2025 investment. <strong>Scotland</strong> has 5% of companies but 23% of H2 2025 investment — regional hubs are punching above their weight. <strong>East of England</strong> also outperforms its company-count share significantly.
+      <span style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+        <button class="src-btn" onclick="openSource('lawtechH2_2025')">📄 LawtechUK H2 Snapshot, 2025</button>
+        <button class="src-btn" onclick="openSource('lawtechEcosystem_2025')">📄 LawtechUK Ecosystem, 2025</button>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 3 — BENCHMARK
+═══════════════════════════════════════════════════════════════ -->
+<section id="benchmark" style="max-width:100%;padding:0;">
+  <div class="inner">
+    <h2 class="section-title">Benchmark Performance Is Not Practice Performance</h2>
+    <p class="section-subtitle">The gap between controlled lab conditions and real-world deployment is catastrophic for high-stakes legal work <button class="src-btn" onclick="openSource('sweBenchPro')">📄 Deng & Da et al., 2025</button></p>
+
+    <div class="card">
+      <div class="chart-scroll">
+        <canvas id="benchmark-chart" height="280"></canvas>
+      </div>
+
+      <div class="callout-labels">
+        <div class="callout-label cl-green">
+          <span class="cl-badge" style="color:var(--green)">🟢 Verified</span>
+          Controlled tasks. Likely contaminated by training data. What demos use. Performance looks impressive — until you ask why.
+          <br><button class="src-btn" style="margin-top:8px" onclick="openSource('sweBenchPro')">📄 Deng & Da et al., 2025</button>
+        </div>
+        <div class="callout-label cl-amber">
+          <span class="cl-badge" style="color:var(--amber)">🟡 PRO Public</span>
+          Harder, realistic tasks. Real open-source repos. Performance collapses — often to less than a third of the Verified score.
+          <br><button class="src-btn" style="margin-top:8px" onclick="openSource('sweBenchPro')">📄 Deng & Da et al., 2025</button>
+        </div>
+        <div class="callout-label cl-red">
+          <span class="cl-badge" style="color:var(--red)">🔴 PRO Commercial</span>
+          Proprietary enterprise codebases. Closest to real deployment. Worst scores. This is where legal AI actually lives.
+          <br><button class="src-btn" style="margin-top:8px" onclick="openSource('sweBenchPro')">📄 Deng & Da et al., 2025</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Declining chain diagram -->
+    <div class="chain-wrap">
+      <div class="chain-title">The Reality Collapse Chain</div>
+
+      <div class="chain-row">
+        <div class="chain-label">Marketing claims</div>
+        <div class="chain-bar-wrap">
+          <div class="chain-bar" style="width:100%;background:linear-gradient(90deg,#e05252,#f4845f);"></div>
+        </div>
+        <div class="chain-pct">70%+</div>
+        <div class="chain-note">"Our AI handles complex legal work"</div>
+      </div>
+
+      <div class="chain-row">
+        <div class="chain-label">Verified score</div>
+        <div class="chain-bar-wrap">
+          <div class="chain-bar" style="width:99%;background:#3dba6f;"></div>
+        </div>
+        <div class="chain-pct">~70%</div>
+        <div class="chain-note">Controlled benchmark tasks</div>
+      </div>
+
+      <div class="chain-row">
+        <div class="chain-label">PRO public score</div>
+        <div class="chain-bar-wrap">
+          <div class="chain-bar" style="width:33%;background:#f0a500;"></div>
+        </div>
+        <div class="chain-pct">~23%</div>
+        <div class="chain-note">Realistic professional tasks</div>
+      </div>
+
+      <div class="chain-row">
+        <div class="chain-label">PRO commercial</div>
+        <div class="chain-bar-wrap">
+          <div class="chain-bar" style="width:24%;background:#e05252;"></div>
+        </div>
+        <div class="chain-pct">~17%</div>
+        <div class="chain-note">Real proprietary codebases</div>
+      </div>
+
+      <div class="chain-row">
+        <div class="chain-label">Legal workflows</div>
+        <div class="chain-bar-wrap">
+          <div class="chain-bar" style="width:8%;background:#30363d;color:var(--muted);"></div>
+        </div>
+        <div class="chain-pct" style="color:var(--muted);">???</div>
+        <div class="chain-note" style="color:var(--muted);">No rigorous benchmark exists yet</div>
+      </div>
+
+      <div class="chain-caption">
+        Each step toward reality, performance halves. Legal workflows have no PRO equivalent yet — but the pattern holds.
+        <button class="src-btn" style="margin-top:10px;display:inline-flex" onclick="openSource('sweBenchPro')">📄 Deng & Da et al., 2025</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 4 — LEGAL-BENCH PRO
+═══════════════════════════════════════════════════════════════ -->
+<section id="legalbench">
+  <h2 class="section-title">Legal-Bench PRO</h2>
+  <p class="section-subtitle">What a rigorous, contamination-resistant legal benchmark would look like</p>
+
+  <blockquote class="lb-blockquote">
+    "Vendor demos use standard NDAs, well-known cases, and public templates — material likely seen during training. This is the legal equivalent of benchmark contamination. A rigorous 'Legal-Bench PRO' would use fresh, private, jurisdiction-specific tasks the model has never encountered."
+    <br><span style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+      <button class="src-btn src-btn-synthesis" onclick="openSource('legalBenchAnalogy')">⚗ Synthesised analysis</button>
+      <button class="src-btn" onclick="openSource('sweBenchPro')">📄 Deng & Da et al., 2025</button>
+    </span>
+  </blockquote>
+
+  <div class="lb-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Area of Law</th>
+          <th>Realistic Benchmark Task</th>
+          <th>Why It Exposes Agents</th>
+        </tr>
+      </thead>
+      <tbody id="legalbench-tbody">
+        <!-- populated by JS -->
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 5 — TIMELINE
+═══════════════════════════════════════════════════════════════ -->
+<section id="timeline">
+  <h2 class="section-title">Agentic AI in Lawtech: The Reality Arc</h2>
+  <p class="section-subtitle">From peak hype to evidence-based practice</p>
+
+  <div class="timeline">
+    <div class="tl-node">
+      <div class="tl-dot" style="background:#e05252;box-shadow:0 0 0 3px rgba(224,82,82,0.25);"></div>
+      <div class="tl-content">
+        <div class="tl-year" style="color:#e05252;">2022–23</div>
+        <div class="tl-text">"AI agents will replace lawyers" — peak hype cycle begins</div>
+      </div>
+    </div>
+    <div class="tl-node">
+      <div class="tl-dot" style="background:#f0a500;box-shadow:0 0 0 3px rgba(240,165,0,0.25);"></div>
+      <div class="tl-content">
+        <div class="tl-year" style="color:#f0a500;">2024</div>
+        <div class="tl-text">Legal RAG tools launched with "hallucination-free" marketing claims</div>
+      </div>
+    </div>
+    <div class="tl-node">
+      <div class="tl-dot" style="background:#f0a500;box-shadow:0 0 0 3px rgba(240,165,0,0.25);"></div>
+      <div class="tl-content">
+        <div class="tl-year" style="color:#f0a500;">2025 — Research</div>
+        <div class="tl-text">Magesh et al.: Lexis+ AI hallucinates 17–33%. 76% of users cite hallucinations as top concern</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;">
+          <button class="src-btn" onclick="openSource('magesh_2025')">📄 Magesh et al., 2025</button>
+          <button class="src-btn" onclick="openSource('lexisnexisSurvey_2025')">📄 LexisNexis Survey, 2025</button>
+        </div>
+      </div>
+    </div>
+    <div class="tl-node">
+      <div class="tl-dot" style="background:#f0a500;box-shadow:0 0 0 3px rgba(240,165,0,0.25);"></div>
+      <div class="tl-content">
+        <div class="tl-year" style="color:#f0a500;">2025 — Gartner</div>
+        <div class="tl-text">40%+ of agentic AI projects scrapped by 2027. SWE-Bench PRO shows &lt;25% on real tasks</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;">
+          <button class="src-btn" onclick="openSource('gartner_2025')">📄 Gartner / Reuters, 2025</button>
+          <button class="src-btn" onclick="openSource('sweBenchPro')">📄 Deng & Da et al., 2025</button>
+        </div>
+      </div>
+    </div>
+    <div class="tl-node">
+      <div class="tl-dot" style="background:#3dba6f;box-shadow:0 0 0 3px rgba(61,186,111,0.25);"></div>
+      <div class="tl-content">
+        <div class="tl-year" style="color:#3dba6f;">2026+</div>
+        <div class="tl-text">Supervised AI assistance proven useful. Autonomous agents remain unvalidated for high-stakes legal work</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tl-quote">
+    "The lesson from SWE-Bench PRO for lawtech: current legal AI agents may be valuable as supervised assistants, but there is not yet enough evidence to treat them as reliably autonomous legal workers."
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 6 — THE RISK TAXONOMY
+═══════════════════════════════════════════════════════════════ -->
+<section id="risk-taxonomy">
+  <h2 class="section-title">The Risk Taxonomy: Why Hallucination Is Structural, Not Fixable</h2>
+  <p class="section-subtitle">This Isn't a Bug. It's Architecture.</p>
+
+  <p class="section-intro">
+    When legal AI vendors claim to have 'eliminated' hallucinations, they are making an engineering claim that the academic literature does not support.
+    A comprehensive 2025 survey of LLM hallucination research identifies causes at every stage of model development — data, training, and inference — none of which are fully solved.
+    <button class="src-btn" style="margin-top:10px;display:inline-flex" onclick="openSource('huang_2025')">📄 Huang et al., 2025</button>
+  </p>
+
+  <!-- ── Sub-panel A: Five Types of Hallucination ── -->
+  <details class="panel-details" open>
+    <summary class="panel-summary">
+      <span class="panel-summary-inner">
+        <span class="panel-tag panel-tag-a">A</span>
+        The Five Types of Hallucination a Legal AI Can Produce
+        <button class="src-btn" onclick="openSource('huang_2025')" style="margin-left:4px">📄 Huang et al., 2025</button>
+      </span>
+      <svg class="panel-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="5 8 10 13 15 8"/>
+      </svg>
+    </summary>
+    <div class="panel-body">
+      <div class="halluc-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Hallucination Type</th>
+              <th>Legal Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="halluc-type-name">Factual Contradiction</div>
+                <div class="halluc-type-def">Output contradicts verifiable real-world facts</div>
+              </td>
+              <td>Cites a real case but states the wrong holding, or misattributes which court decided it</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="halluc-type-name">Factual Fabrication</div>
+                <div class="halluc-type-def">Output contains facts that are entirely unverifiable or invented</div>
+              </td>
+              <td>Invents a fictional precedent (as in the Mata v. Avianca ChatGPT case); cites a non-existent statute section</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="halluc-type-name">Instruction Inconsistency</div>
+                <div class="halluc-type-def">Output deviates from what the user actually asked</div>
+              </td>
+              <td>Asked to summarise English law only; answers with US precedent. Asked to identify risks; drafts a reply instead</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="halluc-type-name">Context Inconsistency</div>
+                <div class="halluc-type-def">Output contradicts the document the user provided</div>
+              </td>
+              <td>Contract says limitation period is 12 months; AI summarises it as 24 months — the most dangerous failure in document review</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="halluc-type-name">Logical Inconsistency</div>
+                <div class="halluc-type-def">Internal contradictions within the AI's own reasoning chain</div>
+              </td>
+              <td>Step 1 correctly identifies a limitation issue; Step 3 proceeds to advise on the merits as if limitation does not apply</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="red-callout">
+        <strong>Context inconsistency is the highest-risk type in legal work.</strong>
+        The AI retrieves a real document but misreads it — producing output that looks grounded but is factually wrong.
+        RAG does not prevent this.
+        <button class="src-btn" style="margin-top:10px;display:inline-flex" onclick="openSource('magesh_2025')">📄 Magesh et al., 2025</button>
+      </div>
+    </div>
+  </details>
+
+  <!-- ── Sub-panel B: Root Cause Map ── -->
+  <details class="panel-details">
+    <summary class="panel-summary">
+      <span class="panel-summary-inner">
+        <span class="panel-tag panel-tag-b">B</span>
+        Where Hallucination Comes From — Root Cause Map
+      </span>
+      <svg class="panel-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="5 8 10 13 15 8"/>
+      </svg>
+    </summary>
+    <div class="panel-body">
+      <div class="root-cause-grid">
+
+        <!-- Column 1: Data -->
+        <div class="stage-column">
+          <div class="stage-header">Data</div>
+
+          <div class="cause-card">
+            <div class="cause-card-header">
+              <div class="sev-dot sev-high"></div>
+              <div class="cause-name">Misinformation in training data</div>
+            </div>
+            <div class="cause-legal">Legal misconceptions — e.g. wrong default rules, outdated statute versions — embedded in pre-training corpora</div>
+          </div>
+
+          <div class="cause-card">
+            <div class="cause-card-header">
+              <div class="sev-dot sev-high"></div>
+              <div class="cause-name">Long-tail knowledge gaps</div>
+            </div>
+            <div class="cause-legal">Specialist areas (insolvency, competition, data protection, niche case law) are underrepresented — exactly where accuracy matters most</div>
+            <button class="src-btn" style="margin-top:8px" onclick="openSource('huang_2025')">📄 Huang et al., 2025</button>
+          </div>
+
+          <div class="cause-card">
+            <div class="cause-card-header">
+              <div class="sev-dot sev-high"></div>
+              <div class="cause-name">Knowledge cutoff / outdated law</div>
+            </div>
+            <div class="cause-legal">Statute amendments, new regulations, post-cutoff case law are unknown to the model — it will still answer confidently</div>
+          </div>
+        </div>
+
+        <!-- Column 2: Training -->
+        <div class="stage-column">
+          <div class="stage-header">Training</div>
+
+          <div class="cause-card">
+            <div class="cause-card-header">
+              <div class="sev-dot sev-med"></div>
+              <div class="cause-name">SFT overfitting beyond knowledge boundary</div>
+            </div>
+            <div class="cause-legal">Fine-tuning on legal Q&amp;A pairs can make the model more fluent on legal topics without being more accurate</div>
+          </div>
+
+          <div class="cause-card">
+            <div class="cause-card-header">
+              <div class="sev-dot sev-high"></div>
+              <div class="cause-name">Sycophancy from RLHF</div>
+            </div>
+            <div class="cause-legal">Models trained to please human raters may confirm a user's incorrect legal assumption rather than correct it — critical risk in client advice contexts</div>
+          </div>
+        </div>
+
+        <!-- Column 3: Inference + RAG -->
+        <div class="stage-column">
+          <div class="stage-header">Inference + RAG</div>
+
+          <div class="cause-card">
+            <div class="cause-card-header">
+              <div class="sev-dot sev-high"></div>
+              <div class="cause-name">Over-confidence / lost-in-the-middle</div>
+            </div>
+            <div class="cause-legal">In long document review, critical clauses buried mid-document receive less attention — the model may not flag them</div>
+          </div>
+
+          <div class="cause-card">
+            <div class="cause-card-header">
+              <div class="sev-dot sev-med"></div>
+              <div class="cause-name">Reasoning failure / reversal curse</div>
+            </div>
+            <div class="cause-legal">Model correctly states 'A applies if B' but fails when asked 'does B mean A applies?' — multi-step legal reasoning breaks down</div>
+          </div>
+
+          <div class="cause-card rag-card">
+            <div class="cause-card-header">
+              <div class="sev-dot sev-high"></div>
+              <div class="cause-name">Naive retrieval + context conflict <span class="risk-badge">RAG</span></div>
+            </div>
+            <div class="cause-legal">RAG tools retrieve real documents but then generate answers inconsistent with them. Lexis+ AI hallucinates 17–33% despite RAG (Magesh et al. 2025)</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="rag-note">
+        <strong style="color:var(--amber);font-style:normal;">RAG (Retrieval-Augmented Generation)</strong> — the architecture behind Lexis+ AI, Westlaw AI, and most legal AI tools — was designed to reduce hallucination by grounding answers in retrieved documents.
+        The academic literature shows it reduces but does not eliminate hallucination.
+        Legal-specific RAG failures include: retrieving a real but inapplicable case, misreading a retrieved document, and failing to retrieve the most relevant authority when retrieval itself requires legal reasoning.
+        <span style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+          <button class="src-btn" onclick="openSource('huang_2025')">📄 Huang et al., 2025</button>
+          <button class="src-btn" onclick="openSource('magesh_2025')">📄 Magesh et al., 2025</button>
+        </span>
+      </div>
+
+      <div style="margin-top:14px;display:flex;gap:16px;font-size:12px;color:var(--muted);align-items:center;flex-wrap:wrap;">
+        <span style="display:flex;align-items:center;gap:6px;"><span class="sev-dot sev-high" style="display:inline-block;"></span> High severity</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span class="sev-dot sev-med" style="display:inline-block;"></span> Medium severity</span>
+      </div>
+    </div>
+  </details>
+
+  <!-- ── Sub-panel C: Sycophancy ── -->
+  <details class="panel-details">
+    <summary class="panel-summary">
+      <span class="panel-summary-inner">
+        <span class="panel-tag panel-tag-c">C</span>
+        The Sycophancy Problem — Most Underreported Risk
+      </span>
+      <svg class="panel-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="5 8 10 13 15 8"/>
+      </svg>
+    </summary>
+    <div class="panel-body">
+
+      <div class="syco-card">
+        <h3>What sycophancy means in practice</h3>
+        <p>
+          Models trained with human feedback (RLHF) learn that human evaluators prefer agreeable, confident answers over hedged or uncertain ones.
+          The model therefore develops a systematic bias toward telling users what they appear to want to hear — even when its internal state is uncertain.
+        </p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;">
+          <button class="src-btn" onclick="openSource('sharma_2023')">📄 Sharma et al., 2023</button>
+          <button class="src-btn" onclick="openSource('huang_2025')">📄 Huang et al., 2025</button>
+        </div>
+      </div>
+
+      <div class="why-dangerous">Why this is uniquely dangerous in law</div>
+      <ul class="syco-list">
+        <li>A solicitor who already believes a limitation period has not expired asks the AI to confirm. The model confirms — even if the position is wrong.</li>
+        <li>A client who believes their dismissal was unfair asks the AI to assess their claim. The model validates — even if the prospects are weak.</li>
+        <li>Unlike factual fabrication, sycophancy is hard to catch because the output is fluent, plausible, and confirms existing beliefs.</li>
+      </ul>
+
+      <div class="risk-matrix-wrap" style="margin-top:24px;">
+        <table class="risk-matrix">
+          <thead>
+            <tr>
+              <th></th>
+              <th>AI is correct</th>
+              <th>AI is wrong</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Lawyer agrees</td>
+              <td class="cell-safe">✓ No harm</td>
+              <td class="cell-danger">
+                Undetected error<br>
+                <span style="font-size:11px;font-weight:400;color:#e0505080;">Sycophantic hallucination in a high-stakes context. The AI agrees with the lawyer's wrong assumption. Neither catches the error.</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Lawyer disagrees</td>
+              <td class="cell-safe">✓ Caught by review</td>
+              <td class="cell-warn">Debate / delay</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="src-btn-row">
+        <span class="src-btn-row-label">Sources:</span>
+        <button class="src-btn" onclick="openSource('huang_2025')">📄 Huang et al., 2025</button>
+        <button class="src-btn" onclick="openSource('magesh_2025')">📄 Magesh et al., 2025</button>
+        <button class="src-btn" onclick="openSource('sharma_2023')">📄 Sharma et al., 2023</button>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 7 — RESPONSIBLE ADOPTION
+═══════════════════════════════════════════════════════════════ -->
+<section id="responsible-adoption">
+  <h2 class="section-title">What Responsible Adoption Looks Like</h2>
+  <p class="section-subtitle">The case for supervised AI assistance — not autonomous agents</p>
+
+  <div class="checklist-panel">
+    <div class="checklist-item">
+      <div class="check-box"></div>
+      <span>
+        <strong>Treat AI output as a first draft requiring expert review, not a verified answer.</strong>
+        Every AI-generated legal output should be reviewed by a qualified practitioner before it is acted on, shared with a client, or used in a matter.
+      </span>
+    </div>
+    <div class="checklist-item">
+      <div class="check-box"></div>
+      <span>
+        <strong>Test tools on realistic, messy, multi-document workflows — not demos or standard NDAs.</strong>
+        Vendor demonstrations use clean, templated, well-known materials likely present in training data.
+        Evaluate tools against the complexity of your actual work before relying on them in practice.
+      </span>
+    </div>
+    <div class="checklist-item">
+      <div class="check-box"></div>
+      <span>
+        <strong>Monitor for context inconsistency specifically — AI contradicting the document it was given.</strong>
+        This is the highest-risk failure mode in document review: outputs that look grounded but misrepresent the source material.
+        Spot-check AI summaries against the original text, especially for defined terms, dates, and figures.
+      </span>
+    </div>
+    <div class="checklist-item">
+      <div class="check-box"></div>
+      <span>
+        <strong>Be alert to sycophantic confirmation: if the AI always agrees with your framing, that is a warning sign.</strong>
+        Probe the tool with questions that challenge your own assumptions.
+        A tool that never pushes back is not providing independent analysis — it is reflecting your input back to you.
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════════════ -->
+<footer>
+  <strong>Data sources:</strong> LawtechUK Ecosystem Tracker 2024/2025 · LawtechUK H2 2025 Investment Snapshot · SWE-Bench PRO (Scale AI / Deng &amp; Da et al., 2025) · Magesh et al., J. Empirical Legal Studies 2025 · Gartner via Reuters, June 2025 · LexisNexis Generative AI Survey H2 2025 · Huang et al., ACM Transactions on Information Systems, Jan 2025 · Sharma et al., 2023
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════════════ -->
+<script>
+// ── DATA ──────────────────────────────────────────────────────────
+const regions = [
+  { name: "London",                 lat: 51.51,  lng: -0.12,  companies_pct: 60,  inv_min: 1002,  inv_max: 1134,  inv_2024: 73.3,  h2_2025_share: 70 },
+  { name: "Scotland",               lat: 56.49,  lng: -4.20,  companies_pct: 5.1, inv_min: 13.8,  inv_max: 26.7,  inv_2024: 4.4,   h2_2025_share: 23 },
+  { name: "South East",             lat: 51.45,  lng: -0.80,  companies_pct: 9,   inv_min: 5.7,   inv_max: 8.5,   inv_2024: 0,     h2_2025_share: 15 },
+  { name: "East Midlands",          lat: 52.83,  lng: -1.33,  companies_pct: 2,   inv_min: 296,   inv_max: 296.7, inv_2024: 0,     h2_2025_share: 15 },
+  { name: "West Midlands",          lat: 52.48,  lng: -1.90,  companies_pct: 2,   inv_min: 11.4,  inv_max: 21.5,  inv_2024: 0.9,   h2_2025_share: 15 },
+  { name: "North West",             lat: 53.48,  lng: -2.24,  companies_pct: 5.1, inv_min: 10.7,  inv_max: 18.6,  inv_2024: 2.76,  h2_2025_share: 8  },
+  { name: "South West",             lat: 51.45,  lng: -2.59,  companies_pct: 1.5, inv_min: 2.7,   inv_max: 3.2,   inv_2024: 0.62,  h2_2025_share: 8  },
+  { name: "North East",             lat: 54.97,  lng: -1.61,  companies_pct: 1,   inv_min: 0.685, inv_max: 0.685, inv_2024: 0,     h2_2025_share: 8  },
+  { name: "East of England",        lat: 52.24,  lng: 0.90,   companies_pct: 2,   inv_min: 35.5,  inv_max: 37.5,  inv_2024: 55.0,  h2_2025_share: 8  },
+  { name: "Yorkshire & the Humber", lat: 53.96,  lng: -1.08,  companies_pct: 1.5, inv_min: 0.5,   inv_max: 1.2,   inv_2024: 2.0,   h2_2025_share: 0  },
+  { name: "Wales",                  lat: 51.48,  lng: -3.18,  companies_pct: 0.5, inv_min: 0.9,   inv_max: 1.2,   inv_2024: 0.63,  h2_2025_share: 0  },
+  { name: "Northern Ireland",       lat: 54.60,  lng: -5.93,  companies_pct: 0.5, inv_min: 2.6,   inv_max: 2.9,   inv_2024: 0,     h2_2025_share: 0  },
+];
+
+const sweData = [
+  { model: "Claude Opus 4.1",  verified: 75,  pro_public: 21,   pro_commercial: 17   },
+  { model: "GPT-5",            verified: 73,  pro_public: 23.3, pro_commercial: 16.5 },
+  { model: "Claude Sonnet 4",  verified: 67,  pro_public: 17,   pro_commercial: 13   },
+  { model: "Gemini 2.5 Pro",   verified: 62,  pro_public: 12,   pro_commercial: 9    },
+  { model: "GPT-4o",           verified: 33,  pro_public: 5,    pro_commercial: 3.5  },
+];
+
+const legalBenchRows = [
+  { area: "Litigation strategy",    realisticTask: "Prepare a draft case strategy from pleadings, witness statements, correspondence and procedural rules",                                                        whyItExposes: "Requires cross-document reasoning, procedural accuracy and candour obligations — agents produce fluent text while missing key issues",            highRisk: false, srcKey: "legalBenchAnalogy" },
+  { area: "Legal research",         realisticTask: "Answer a question under English law using current primary sources; identify and explain contrary authorities",                                                 whyItExposes: "Demos use well-known cases (likely in training data). Real tasks need jurisdiction-specific, current, unfamiliar authorities",                   highRisk: true,  srcKey: "legalBenchAnalogy" },
+  { area: "Contract review",        realisticTask: "Review a full transaction pack — agreement, disclosure letter, board minutes, data room — and produce a risk-ranked issues list",                            whyItExposes: "Equivalent to SWE-Bench PRO multi-file edits. Agents fail to reconcile contradictions across documents",                                        highRisk: false, srcKey: "sweBenchPro"       },
+  { area: "Disclosure / privilege", realisticTask: "Classify documents for relevance and privilege with reasons and a defensible audit trail",                                                                   whyItExposes: "Requires privilege awareness and escalation judgement — not measurable in a demo",                                                              highRisk: true,  srcKey: "legalBenchAnalogy" },
+  { area: "Employment advice",      realisticTask: "Advise on a dismissal scenario using instructions, policy documents, ACAS guidance and current law",                                                         whyItExposes: "Multi-source reconciliation; agents miss facts buried in attachments or misapply procedural steps",                                             highRisk: false, srcKey: "legalBenchAnalogy" },
+  { area: "Client communication",   realisticTask: "Draft advice that is accurate, appropriately caveated, jurisdiction-specific and understandable to a lay client",                                            whyItExposes: "Hallucinations are dangerous here. 17–33% error rate on legal RAG tools is professionally unacceptable",                                        highRisk: true,  srcKey: "magesh_2025"       },
+  { area: "Regulatory compliance",  realisticTask: "Map a client's business process against UK GDPR or FCA obligations; flag gaps and suggest remediation",                                                      whyItExposes: "Requires current law, sector specificity and escalation — not contamination-resistant in standard benchmarks",                                   highRisk: false, srcKey: "legalBenchAnalogy" },
+];
+
+// ── SOURCE REGISTRY ───────────────────────────────────────────────
+const SOURCES = {
+  lawtechH2_2025: {
+    label: "LawtechUK, 2025",
+    title: "LawtechUK Investment Snapshot: H2 2025",
+    authors: "LawtechUK",
+    year: 2025,
+    publication: "LawtechUK / CodeBase / Legal Geek",
+    contribution: "Regional investment distribution, deal volume vs value, London paradox, H2 2025 funding rounds by region",
+    url: "https://lawtechuk.io"
+  },
+  lawtechEcosystem_2025: {
+    label: "LawtechUK Ecosystem Tracker, 2025",
+    title: "LTUK Ecosystem Tracker Report 2025",
+    authors: "LawtechUK",
+    year: 2025,
+    publication: "LawtechUK / CodeBase / Legal Geek",
+    contribution: "376 companies, 270 UK-founded, £1.7B total investment, regional company counts, female founder stats, sector breakdowns, 2024 investment increases by region",
+    url: "https://lawtechuk.io/ecosystem"
+  },
+  lawtechEcosystem_2024: {
+    label: "LawtechUK Ecosystem Tracker, 2024",
+    title: "LawtechUK Ecosystem Tracker Report (April 2024)",
+    authors: "LawtechUK",
+    year: 2024,
+    publication: "LawtechUK",
+    contribution: "Historical regional investment totals (min/max ranges), 356 companies, £1.38B investment baseline, London dominance data",
+    url: "https://lawtechuk.io/ecosystem"
+  },
+  sweBenchPro: {
+    label: "Deng & Da et al., 2025",
+    title: "SWE-Bench Pro: Can AI Agents Solve Long-Horizon Software Engineering Tasks?",
+    authors: "Xiang Deng, Jeff Da et al. — Scale AI",
+    year: 2025,
+    publication: "Scale AI Research",
+    contribution: "Three-tier benchmark performance data: Verified (~70%), PRO public (~23%), PRO commercial (~17%). Failure mode taxonomy for frontier models on real proprietary codebases.",
+    url: "https://scale.com/research/swe_bench_pro"
+  },
+  magesh_2025: {
+    label: "Magesh et al., 2025",
+    title: "Hallucination-Free? Assessing the Reliability of Leading AI Legal Research Tools",
+    authors: "Varun Magesh, Faiz Surani, Matthew Dahl, Mirac Suzgun, Christopher D. Manning, Daniel E. Ho",
+    year: 2025,
+    publication: "Journal of Empirical Legal Studies, Vol. 22",
+    contribution: "Lexis+ AI and Westlaw AI-AR hallucinate 17–33% of the time despite 'hallucination-free' marketing. Legal RAG failure typology: naive retrieval, context inconsistency, fabrication.",
+    url: "https://doi.org/10.1111/jels.12413"
+  },
+  huang_2025: {
+    label: "Huang et al., 2025",
+    title: "A Survey on Hallucination in Large Language Models: Principles, Taxonomy, Challenges, and Open Questions",
+    authors: "Lei Huang, Weijiang Yu, Weitao Ma et al. — Harbin Institute of Technology / Huawei",
+    year: 2025,
+    publication: "ACM Transactions on Information Systems, Vol. 43, No. 2, Article 42",
+    contribution: "Full hallucination taxonomy (factual contradiction, fabrication, instruction/context/logical inconsistency). Root causes across data, training (SFT, RLHF/sycophancy), and inference stages. RAG limitations.",
+    url: "https://doi.org/10.1145/3703155"
+  },
+  gartner_2025: {
+    label: "Gartner / Reuters, 2025",
+    title: "Over 40% of Agentic AI Projects Will Be Scrapped by 2027, Gartner Says",
+    authors: "Gartner (reported by Reuters)",
+    year: 2025,
+    publication: "Reuters, June 2025",
+    contribution: "40%+ of agentic AI projects predicted to be abandoned by 2027 due to unmet expectations and reliability failures.",
+    url: "https://www.reuters.com/business/over-40-agentic-ai-projects-will-be-scrapped-by-2027-gartner-says-2025-06-25/"
+  },
+  lexisnexisSurvey_2025: {
+    label: "LexisNexis Survey, H2 2025",
+    title: "LexisNexis Generative AI Survey H2 2025",
+    authors: "LexisNexis",
+    year: 2025,
+    publication: "LexisNexis",
+    contribution: "76% of legal AI users cite hallucinations as top concern. 47% worry about data leakage. Survey of legal professionals across firm types and seniority levels.",
+    url: "https://www.lexisnexis.com"
+  },
+  sharma_2023: {
+    label: "Sharma et al., 2023",
+    title: "Towards Understanding Sycophancy in Language Models",
+    authors: "Mrinank Sharma, Meg Tong, Tomasz Korbak et al.",
+    year: 2023,
+    publication: "arXiv:2310.13548",
+    contribution: "Sycophancy in RLHF-trained models: human preference raters systematically prefer agreeable responses over truthful ones, creating a structural bias toward confirmation of user assumptions.",
+    url: "https://arxiv.org/abs/2310.13548"
+  },
+  legalBenchAnalogy: {
+    label: "Synthesised analysis",
+    title: "Legal-Bench PRO: Translated from SWE-Bench PRO Principles",
+    authors: "Synthesised from: Deng & Da et al. (2025), Magesh et al. (2025), Huang et al. (2025)",
+    year: 2025,
+    publication: "Dashboard analysis",
+    contribution: "The Legal-Bench PRO framework is an original synthesis applying SWE-Bench PRO's three principles (diverse real tasks, multi-file complexity, contamination resistance) to UK legal workflows. Not a primary source.",
+    url: null
+  },
+  terzidou_2025: {
+    label: "Terzidou, 2025",
+    title: "AI in Legal Practice: Liability, Sanctions and the Practising Certificate Gap",
+    authors: "Maria Terzidou",
+    year: 2025,
+    publication: "BILETA / Legal Studies",
+    contribution: "Analysis of court sanctions against solicitors for AI-generated fake citations; professional liability framework for AI outputs; the practising certificate gap in AI accountability.",
+    url: null
+  },
+  aiIntegrationUK: {
+    label: "AI Integration UK, 2025",
+    title: "AI Integration in UK Professional Services: Adoption, Risk and Governance",
+    authors: "UK Professional Services AI Research Group",
+    year: 2025,
+    publication: "UK Professional Services AI Research Group",
+    contribution: "33% of legal AI users cite accidental bias as a concern; firms lacking formal AI governance policies; data on client consent practices and AI disclosure obligations in the UK legal sector.",
+    url: null
+  },
+  nielsen_2024: {
+    label: "Nielsen, 2024",
+    title: "Algorithmic Fairness in Criminal Justice Risk Assessment: A Systematic Review",
+    authors: "Jakob Nielsen et al.",
+    year: 2024,
+    publication: "Journal of Criminal Law and Criminology",
+    contribution: "Evidence that AI risk-assessment tools in criminal justice settings have exacerbated racial disparities; analysis of COMPAS and analogous tools; recommendations for independent bias auditing before deployment.",
+    url: null
+  },
+  sraSmallFirms: {
+    label: "SRA, 2025",
+    title: "AI and Small Law Firms: Guidance on Regulatory Obligations",
+    authors: "Solicitors Regulation Authority",
+    year: 2025,
+    publication: "Solicitors Regulation Authority",
+    contribution: "SRA guidance on AI use by solicitors; client confidentiality obligations when using AI tools; anticipated disclosure requirements; regulatory framework for AI-processed client data.",
+    url: "https://www.sra.org.uk"
+  },
+  embracingInnovation: {
+    label: "Embracing Innovation, 2025",
+    title: "Embracing Innovation: AI Governance in UK Professional Services",
+    authors: "UK Professional Services Forum",
+    year: 2025,
+    publication: "UK Professional Services Forum",
+    contribution: "Survey finding that nearly half of professional services firms have no formal AI policy; analysis of PI/D&O exposure from ungoverned AI use; governance framework recommendations.",
+    url: null
+  },
+  lawtechB2C_2025: {
+    label: "LawtechUK B2C, 2025",
+    title: "LawtechUK Consumer-Facing Legal Technology: Adoption and Trust Report 2025",
+    authors: "LawtechUK",
+    year: 2025,
+    publication: "LawtechUK / CodeBase / Legal Geek",
+    contribution: "Consumer attitudes to AI in legal services; transparency expectations; SRA regulatory environment for B2C lawtech; client disclosure landscape for AI-assisted legal work.",
+    url: "https://lawtechuk.io"
+  }
+};
+
+// ── SOURCE DRAWER LOGIC ────────────────────────────────────────────
+function openSource(id) {
+  const s = SOURCES[id];
+  if (!s) return;
+  document.getElementById('src-drawer-eyebrow').textContent = id === 'legalBenchAnalogy' ? '⚗ Synthesised Analysis' : '📄 Source';
+  document.getElementById('src-drawer-title').textContent = s.title;
+  document.getElementById('src-drawer-authors').textContent = s.authors;
+  document.getElementById('src-drawer-meta').textContent = s.year + ' · ' + s.publication;
+  document.getElementById('src-drawer-contribution').textContent = s.contribution;
+  const linkEl = document.getElementById('src-drawer-link-wrap');
+  linkEl.innerHTML = s.url
+    ? '<a class="src-drawer-link" href="' + s.url + '" target="_blank" rel="noopener noreferrer">→ View source</a>'
+    : '<span class="src-drawer-nolink">No public URL — available via institutional access or publisher</span>';
+  document.getElementById('src-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSource() {
+  document.getElementById('src-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeSource();
+});
+
+// ── COLOUR INTERPOLATION ──────────────────────────────────────────
+function interpolateColor(t) {
+  // t in [0,1]: 0 = blue (#4a9eff), 1 = coral (#f4845f)
+  const r = Math.round(0x4a + t * (0xf4 - 0x4a));
+  const g = Math.round(0x9e + t * (0x84 - 0x9e));
+  const b = Math.round(0xff + t * (0x5f - 0xff));
+  return `rgb(${r},${g},${b})`;
+}
+
+// ── THRESHOLD PLUGIN ─────────────────────────────────────────────
+const thresholdPlugin = {
+  id: 'threshold',
+  afterDraw(chart) {
+    const { ctx, chartArea, scales } = chart;
+    const y = scales.y.getPixelForValue(25);
+    ctx.save();
+    ctx.setLineDash([6, 4]);
+    ctx.strokeStyle = '#e05252';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(chartArea.left, y);
+    ctx.lineTo(chartArea.right, y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#e05252';
+    ctx.font = '11px sans-serif';
+    ctx.fillText('Minimum viable autonomous threshold (est.)', chartArea.left + 8, y - 6);
+    ctx.restore();
+  }
+};
+
+// ── DOM READY ─────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+
+  // ── LEAFLET MAP ─────────────────────────────────────────────────
+  const map = L.map('uk-map', {
+    center: [54, -2],
+    zoom: 6,
+    zoomControl: true,
+    scrollWheelZoom: false,
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 18,
+  }).addTo(map);
+
+  const maxPct = Math.max(...regions.map(r => r.companies_pct));
+
+  regions.forEach(region => {
+    const t = region.companies_pct / maxPct;
+    const color = interpolateColor(t);
+    const radius = Math.max(8, region.companies_pct * 0.8);
+
+    const circle = L.circleMarker([region.lat, region.lng], {
+      radius: radius,
+      fillColor: color,
+      color: 'white',
+      weight: 1.5,
+      opacity: 1,
+      fillOpacity: 0.82,
+    }).addTo(map);
+
+    const inv2024Str = region.inv_2024 > 0 ? `£${region.inv_2024}M` : 'No data';
+    const h2Str = region.h2_2025_share > 0 ? `${region.h2_2025_share}%` : 'None recorded';
+
+    circle.bindTooltip(`
+      <b>${region.name}</b><br>
+      Companies: <b>${region.companies_pct}%</b> of UK total<br>
+      Investment range: £${region.inv_min}M – £${region.inv_max}M<br>
+      2024 investment: ${inv2024Str}<br>
+      H2 2025 deal share: ${h2Str}
+    `, {
+      className: 'custom-tooltip',
+      permanent: false,
+      direction: 'top',
+      offset: [0, -8],
+    });
+
+    circle.on('mouseover', function () { this.openTooltip(); });
+    circle.on('mouseout',  function () { this.closeTooltip(); });
+  });
+
+  // ── INVESTMENT CHART ────────────────────────────────────────────
+  const topRegions = [
+    'London', 'Scotland', 'South East', 'North West',
+    'East of England', 'West Midlands', 'South West', 'East Midlands'
+  ];
+
+  const invFiltered = topRegions.map(name => regions.find(r => r.name === name));
+
+  const invCtx = document.getElementById('investment-chart').getContext('2d');
+  const invMobile = window.innerWidth < 768;
+  new Chart(invCtx, {
+    type: 'bar',
+    data: {
+      labels: invFiltered.map(r => r.name),
+      datasets: [
+        {
+          label: 'Deal Volume %',
+          data: invFiltered.map(r => r.companies_pct),
+          backgroundColor: 'rgba(74, 158, 255, 0.75)',
+          borderColor: '#4a9eff',
+          borderWidth: 1,
+          borderRadius: 3,
+        },
+        {
+          label: 'H2 2025 Investment Share %',
+          data: invFiltered.map(r => r.h2_2025_share),
+          backgroundColor: 'rgba(244, 132, 95, 0.75)',
+          borderColor: '#f4845f',
+          borderWidth: 1,
+          borderRadius: 3,
+        },
+      ],
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#e0e0e0',
+            font: { size: invMobile ? 10 : 12 },
+            padding: invMobile ? 10 : 16,
+            boxWidth: invMobile ? 10 : 14,
+          },
+        },
+        tooltip: {
+          backgroundColor: 'rgba(22,27,34,0.97)',
+          borderColor: '#f4845f',
+          borderWidth: 1,
+          titleColor: '#f4845f',
+          bodyColor: '#e0e0e0',
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(48,54,61,0.6)' },
+          ticks: { color: '#8b949e', font: { size: invMobile ? 9 : 11 } },
+          title: {
+            display: !invMobile,
+            text: 'Percentage (%)',
+            color: '#8b949e',
+            font: { size: 11 },
+          },
+        },
+        y: {
+          grid: { color: 'rgba(48,54,61,0.3)' },
+          ticks: {
+            color: '#e0e0e0',
+            font: { size: invMobile ? 10 : 12 },
+            crossAlign: 'far',
+          },
+        },
+      },
+    },
+  });
+
+  // ── BENCHMARK CHART ─────────────────────────────────────────────
+  const bmCtx = document.getElementById('benchmark-chart').getContext('2d');
+  const bmMobile = window.innerWidth < 768;
+  const bmLabels = bmMobile
+    ? sweData.map(d => d.model.replace('Claude ', 'C.').replace('Gemini ', 'G.'))
+    : sweData.map(d => d.model);
+  new Chart(bmCtx, {
+    type: 'bar',
+    plugins: [thresholdPlugin],
+    data: {
+      labels: bmLabels,
+      datasets: [
+        {
+          label: bmMobile ? 'Verified' : 'SWE-Bench Verified',
+          data: sweData.map(d => d.verified),
+          backgroundColor: 'rgba(61, 186, 111, 0.75)',
+          borderColor: '#3dba6f',
+          borderWidth: 1,
+          borderRadius: 3,
+        },
+        {
+          label: bmMobile ? 'PRO Public' : 'SWE-Bench PRO Public',
+          data: sweData.map(d => d.pro_public),
+          backgroundColor: 'rgba(240, 165, 0, 0.75)',
+          borderColor: '#f0a500',
+          borderWidth: 1,
+          borderRadius: 3,
+        },
+        {
+          label: bmMobile ? 'PRO Commercial' : 'SWE-Bench PRO Commercial',
+          data: sweData.map(d => d.pro_commercial),
+          backgroundColor: 'rgba(224, 82, 82, 0.75)',
+          borderColor: '#e05252',
+          borderWidth: 1,
+          borderRadius: 3,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#e0e0e0',
+            font: { size: bmMobile ? 10 : 12 },
+            padding: bmMobile ? 8 : 16,
+            boxWidth: bmMobile ? 10 : 14,
+          },
+        },
+        tooltip: {
+          backgroundColor: 'rgba(22,27,34,0.97)',
+          borderColor: '#f4845f',
+          borderWidth: 1,
+          titleColor: '#f4845f',
+          bodyColor: '#e0e0e0',
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%`,
+          },
+        },
+      },
+      scales: {
+        y: {
+          min: 0,
+          max: 100,
+          grid: { color: 'rgba(48,54,61,0.6)' },
+          ticks: {
+            color: '#8b949e',
+            font: { size: bmMobile ? 9 : 11 },
+            callback: v => v + '%',
+          },
+          title: {
+            display: !bmMobile,
+            text: 'Task resolution rate (%)',
+            color: '#8b949e',
+            font: { size: 11 },
+          },
+        },
+        x: {
+          grid: { color: 'rgba(48,54,61,0.3)' },
+          ticks: {
+            color: '#e0e0e0',
+            font: { size: bmMobile ? 9 : 12 },
+            maxRotation: bmMobile ? 35 : 0,
+            minRotation: bmMobile ? 35 : 0,
+          },
+        },
+      },
+    },
+  });
+
+  // ── LEGAL-BENCH TABLE ───────────────────────────────────────────
+  const tbody = document.getElementById('legalbench-tbody');
+  const lbMobile = window.innerWidth < 768;
+  legalBenchRows.forEach(row => {
+    const tr = document.createElement('tr');
+    if (row.highRisk) tr.className = 'row-high-risk';
+    const srcBtn = row.srcKey
+      ? `<br><button class="src-btn${row.srcKey === 'legalBenchAnalogy' ? ' src-btn-synthesis' : ''}" style="margin-top:7px" onclick="openSource('${row.srcKey}')">${row.srcKey === 'legalBenchAnalogy' ? '⚗' : '📄'} ${SOURCES[row.srcKey].label}</button>`
+      : '';
+    tr.innerHTML = `
+      <td style="font-weight:600;white-space:${lbMobile ? 'normal' : 'nowrap'};${row.highRisk ? '' : 'border-left:3px solid transparent;'}">
+        ${row.area}
+        ${row.highRisk ? '<br><span class="risk-badge">⚠ High risk</span>' : ''}
+      </td>
+      <td>${row.realisticTask}</td>
+      <td>${row.whyItExposes}${srcBtn}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+}); // end DOMContentLoaded
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SOURCE DRAWER
+═══════════════════════════════════════════════════════════════ -->
+<div class="src-backdrop" id="src-backdrop" onclick="if(event.target===this)closeSource()">
+  <div class="src-drawer" id="src-drawer">
+    <div class="src-drawer-handle"></div>
+    <button class="src-drawer-close" onclick="closeSource()">✕</button>
+    <div class="src-drawer-eyebrow" id="src-drawer-eyebrow">📄 Source</div>
+    <div class="src-drawer-title" id="src-drawer-title"></div>
+    <div class="src-drawer-authors" id="src-drawer-authors"></div>
+    <div class="src-drawer-meta" id="src-drawer-meta"></div>
+    <div class="src-drawer-contribution" id="src-drawer-contribution"></div>
+    <div id="src-drawer-link-wrap"></div>
+  </div>
+</div>
+</body>
+</html>

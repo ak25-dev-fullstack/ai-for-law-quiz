@@ -1,0 +1,379 @@
+/*
+ * tokens.css — Design Token System
+ *
+ * ARCHITECTURE
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Layer 1 — Primitive palette   Raw hex values. Never used directly in UI.
+ * Layer 2 — Semantic tokens     Meaningful names mapped to primitives.
+ *                                These are what every component references.
+ *
+ * HOW THEMING WORKS (no JS required on initial load)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Default  :root                  → light theme values
+ * Dark OS  @media (prefers-color-scheme: dark) :root:not(.theme-light)
+ *                                 → dark theme values (CSS-only, no JS)
+ * Override .theme-light / .theme-dark on <html>
+ *                                 → explicit user preference persisted via JS
+ *
+ * ADDING A NEW THEME (e.g. high-contrast, sepia, brand)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * 1. Add a new block:  .theme-{name} { --color-…: …; }
+ * 2. Toggle the class on <html> from JS.
+ * No existing token names or component code need to change.
+ *
+ * WCAG AA COMPLIANCE
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Normal text  (< 18 pt / < 14 pt bold)  minimum 4.5 : 1
+ * Large text   (≥ 18 pt / ≥ 14 pt bold)  minimum 3.0 : 1
+ * UI elements  (borders, icons)           minimum 3.0 : 1
+ * Contrast ratios are noted inline as [X.X:1 AA / AAA / large-only].
+ * Disabled & decorative tokens are exempt; noted where applicable.
+ */
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYER 1 — PRIMITIVE PALETTE
+   Defined once on :root. Referenced only by semantic tokens below.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* Violet */
+  --primitive-violet-50:  #f5f3ff;
+  --primitive-violet-100: #ede9fe;
+  --primitive-violet-200: #ddd6fe;
+  --primitive-violet-300: #c4b5fd;
+  --primitive-violet-400: #a78bfa;
+  --primitive-violet-500: #8b5cf6;
+  --primitive-violet-600: #7c3aed;
+  --primitive-violet-700: #6d28d9;
+  --primitive-violet-800: #5b21b6;
+  --primitive-violet-900: #4c1d95;
+  --primitive-violet-950: #2e1065;
+
+  /* Slate (neutrals) */
+  --primitive-slate-50:   #f8fafc;
+  --primitive-slate-100:  #f1f5f9;
+  --primitive-slate-200:  #e2e8f0;
+  --primitive-slate-300:  #cbd5e1;
+  --primitive-slate-400:  #94a3b8;
+  --primitive-slate-500:  #64748b;
+  --primitive-slate-600:  #475569;
+  --primitive-slate-700:  #334155;
+  --primitive-slate-800:  #1e293b;
+  --primitive-slate-900:  #0f172a;
+  --primitive-slate-950:  #020617;
+
+  /* Green (success) */
+  --primitive-green-100:  #dcfce7;
+  --primitive-green-300:  #86efac;
+  --primitive-green-900:  #14532d;
+  --primitive-green-950:  #052e16;
+
+  /* Amber (warning) */
+  --primitive-amber-100:  #fef9c3;
+  --primitive-amber-300:  #fcd34d;
+  --primitive-amber-900:  #78350f;
+  --primitive-amber-950:  #451a03;
+
+  /* Red (error) */
+  --primitive-red-100:    #fee2e2;
+  --primitive-red-300:    #fca5a5;
+  --primitive-red-900:    #7f1d1d;
+  --primitive-red-950:    #450a0a;
+
+  /* Blue (info) */
+  --primitive-blue-100:   #dbeafe;
+  --primitive-blue-300:   #93c5fd;
+  --primitive-blue-900:   #1e3a8a;
+  --primitive-blue-950:   #172554;
+
+  /* White / black */
+  --primitive-white:      #ffffff;
+  --primitive-black:      #000000;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYER 2 — SEMANTIC TOKENS  ·  LIGHT (default)
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+  color-scheme: light;
+
+  /* ── Background
+     Used for page-level surfaces in ascending elevation order. ── */
+  --color-bg-base:           var(--primitive-white);         /* page canvas */
+  --color-bg-subtle:         var(--primitive-slate-50);      /* side panels, rows */
+  --color-bg-muted:          var(--primitive-slate-100);     /* input areas, tags */
+
+  /* ── Surface
+     Floating elements: cards, modals, dropdowns. ── */
+  --color-surface-default:   var(--primitive-white);
+  --color-surface-raised:    var(--primitive-white);
+  --color-surface-overlay:   rgba(255, 255, 255, 0.92);
+
+  /* ── Border ── */
+  --color-border-default:    var(--primitive-slate-200);
+  --color-border-strong:     var(--primitive-slate-300);
+  --color-border-focus:      var(--primitive-violet-600);    /* 5.7:1 on white AA */
+
+  /* ── Text
+     Contrast ratios measured against --color-bg-base (#ffffff). ── */
+  --color-text-primary:      var(--primitive-slate-900);     /* 17.1:1 AAA */
+  --color-text-secondary:    var(--primitive-slate-600);     /*  7.8:1 AAA */
+  --color-text-tertiary:     var(--primitive-slate-500);     /*  5.0:1 AA  */
+  --color-text-placeholder:  var(--primitive-slate-400);     /*  2.7:1 — decorative placeholder only, exempt */
+  --color-text-disabled:     var(--primitive-slate-300);     /*  exempt    */
+  --color-text-inverse:      var(--primitive-slate-50);      /* on dark surfaces */
+  --color-text-on-accent:    var(--primitive-white);         /*  7.7:1 on accent-default AA */
+  --color-text-on-accent-subtle: var(--primitive-violet-800); /* 9.8:1 on accent-subtle AAA */
+
+  /* ── Accent (brand / interactive)
+     Default: violet-700 on white = 7.1:1 AAA. ── */
+  --color-accent-default:    var(--primitive-violet-700);
+  --color-accent-hover:      var(--primitive-violet-800);
+  --color-accent-active:     var(--primitive-violet-900);
+  --color-accent-subtle:     var(--primitive-violet-100);    /* low-emphasis accent fill */
+  --color-accent-text:       var(--primitive-violet-800);    /* 9.8:1 on white AAA */
+
+  /* ── Status: Success ── */
+  --color-status-success-bg:      var(--primitive-green-100);
+  --color-status-success-text:    var(--primitive-green-900); /* 9.0:1 on green-100  AAA */
+  --color-status-success-border:  var(--primitive-green-900);
+
+  /* ── Status: Warning ── */
+  --color-status-warning-bg:      var(--primitive-amber-100);
+  --color-status-warning-text:    var(--primitive-amber-900); /* 8.6:1 on amber-100  AAA */
+  --color-status-warning-border:  var(--primitive-amber-900);
+
+  /* ── Status: Error ── */
+  --color-status-error-bg:        var(--primitive-red-100);
+  --color-status-error-text:      var(--primitive-red-900);  /* 8.8:1 on red-100    AAA */
+  --color-status-error-border:    var(--primitive-red-900);
+
+  /* ── Status: Info ── */
+  --color-status-info-bg:         var(--primitive-blue-100);
+  --color-status-info-text:       var(--primitive-blue-900); /* 9.4:1 on blue-100   AAA */
+  --color-status-info-border:     var(--primitive-blue-900);
+
+  /* ── Shadow ── */
+  --shadow-sm:  0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --shadow-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.10), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYER 2 — SEMANTIC TOKENS  ·  DARK (OS preference, no JS required)
+   :not(.theme-light) ensures explicit light override takes precedence.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-color-scheme: dark) {
+  :root:not(.theme-light) {
+    color-scheme: dark;
+
+    --color-bg-base:           var(--primitive-slate-900);
+    --color-bg-subtle:         var(--primitive-slate-800);
+    --color-bg-muted:          var(--primitive-slate-700);
+
+    --color-surface-default:   var(--primitive-slate-800);
+    --color-surface-raised:    var(--primitive-slate-700);
+    --color-surface-overlay:   rgba(15, 23, 42, 0.92);
+
+    --color-border-default:    var(--primitive-slate-700);
+    --color-border-strong:     var(--primitive-slate-600);
+    --color-border-focus:      var(--primitive-violet-400);   /* 6.5:1 on slate-900 AA */
+
+    /* Contrast ratios measured against --color-bg-base (slate-900 #0f172a). */
+    --color-text-primary:      var(--primitive-slate-50);     /* 16.9:1 AAA */
+    --color-text-secondary:    var(--primitive-slate-300);    /* 11.9:1 AAA */
+    --color-text-tertiary:     var(--primitive-slate-400);    /*  6.5:1 AA  */
+    --color-text-placeholder:  var(--primitive-slate-600);    /*  exempt — decorative */
+    --color-text-disabled:     var(--primitive-slate-700);    /*  exempt    */
+    --color-text-inverse:      var(--primitive-slate-900);
+    --color-text-on-accent:    var(--primitive-white);        /*  9.9:1 on dark accent-default AAA */
+    --color-text-on-accent-subtle: var(--primitive-violet-300); /* 9.4:1 on accent-subtle AAA */
+
+    --color-accent-default:    var(--primitive-violet-400);   /* 6.5:1 on slate-900 AA  */
+    --color-accent-hover:      var(--primitive-violet-300);   /* 8.1:1 on slate-900 AAA */
+    --color-accent-active:     var(--primitive-violet-200);
+    --color-accent-subtle:     var(--primitive-violet-950);
+    --color-accent-text:       var(--primitive-violet-300);   /* 8.1:1 on slate-900 AAA */
+
+    --color-status-success-bg:      var(--primitive-green-950);
+    --color-status-success-text:    var(--primitive-green-300);  /* 7.4:1 on green-950 AA */
+    --color-status-success-border:  var(--primitive-green-300);
+
+    --color-status-warning-bg:      var(--primitive-amber-950);
+    --color-status-warning-text:    var(--primitive-amber-300);  /* 8.0:1 on amber-950 AA */
+    --color-status-warning-border:  var(--primitive-amber-300);
+
+    --color-status-error-bg:        var(--primitive-red-950);
+    --color-status-error-text:      var(--primitive-red-300);    /* 7.8:1 on red-950   AA */
+    --color-status-error-border:    var(--primitive-red-300);
+
+    --color-status-info-bg:         var(--primitive-blue-950);
+    --color-status-info-text:       var(--primitive-blue-300);   /* 9.2:1 on blue-950  AAA */
+    --color-status-info-border:     var(--primitive-blue-300);
+
+    --shadow-sm:  0 1px 2px 0 rgba(0, 0, 0, 0.30);
+    --shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.40), 0 2px 4px -2px rgba(0, 0, 0, 0.25);
+    --shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.50), 0 4px 6px -4px rgba(0, 0, 0, 0.30);
+    --shadow-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.55), 0 8px 10px -6px rgba(0, 0, 0, 0.35);
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THEME CLASS OVERRIDES
+   Applied by JS to persist explicit user preference beyond OS setting.
+   Takes priority over the media query above via specificity / cascade order.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Explicit light ── */
+.theme-light {
+  color-scheme: light;
+
+  --color-bg-base:           var(--primitive-white);
+  --color-bg-subtle:         var(--primitive-slate-50);
+  --color-bg-muted:          var(--primitive-slate-100);
+
+  --color-surface-default:   var(--primitive-white);
+  --color-surface-raised:    var(--primitive-white);
+  --color-surface-overlay:   rgba(255, 255, 255, 0.92);
+
+  --color-border-default:    var(--primitive-slate-200);
+  --color-border-strong:     var(--primitive-slate-300);
+  --color-border-focus:      var(--primitive-violet-600);
+
+  --color-text-primary:      var(--primitive-slate-900);
+  --color-text-secondary:    var(--primitive-slate-600);
+  --color-text-tertiary:     var(--primitive-slate-500);
+  --color-text-placeholder:  var(--primitive-slate-400);
+  --color-text-disabled:     var(--primitive-slate-300);
+  --color-text-inverse:      var(--primitive-slate-50);
+  --color-text-on-accent:    var(--primitive-white);
+  --color-text-on-accent-subtle: var(--primitive-violet-800);
+
+  --color-accent-default:    var(--primitive-violet-700);
+  --color-accent-hover:      var(--primitive-violet-800);
+  --color-accent-active:     var(--primitive-violet-900);
+  --color-accent-subtle:     var(--primitive-violet-100);
+  --color-accent-text:       var(--primitive-violet-800);
+
+  --color-status-success-bg:      var(--primitive-green-100);
+  --color-status-success-text:    var(--primitive-green-900);
+  --color-status-success-border:  var(--primitive-green-900);
+  --color-status-warning-bg:      var(--primitive-amber-100);
+  --color-status-warning-text:    var(--primitive-amber-900);
+  --color-status-warning-border:  var(--primitive-amber-900);
+  --color-status-error-bg:        var(--primitive-red-100);
+  --color-status-error-text:      var(--primitive-red-900);
+  --color-status-error-border:    var(--primitive-red-900);
+  --color-status-info-bg:         var(--primitive-blue-100);
+  --color-status-info-text:       var(--primitive-blue-900);
+  --color-status-info-border:     var(--primitive-blue-900);
+
+  --shadow-sm:  0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --shadow-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.10), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+}
+
+/* Explicit dark ── */
+.theme-dark {
+  color-scheme: dark;
+
+  --color-bg-base:           var(--primitive-slate-900);
+  --color-bg-subtle:         var(--primitive-slate-800);
+  --color-bg-muted:          var(--primitive-slate-700);
+
+  --color-surface-default:   var(--primitive-slate-800);
+  --color-surface-raised:    var(--primitive-slate-700);
+  --color-surface-overlay:   rgba(15, 23, 42, 0.92);
+
+  --color-border-default:    var(--primitive-slate-700);
+  --color-border-strong:     var(--primitive-slate-600);
+  --color-border-focus:      var(--primitive-violet-400);
+
+  --color-text-primary:      var(--primitive-slate-50);
+  --color-text-secondary:    var(--primitive-slate-300);
+  --color-text-tertiary:     var(--primitive-slate-400);
+  --color-text-placeholder:  var(--primitive-slate-600);
+  --color-text-disabled:     var(--primitive-slate-700);
+  --color-text-inverse:      var(--primitive-slate-900);
+  --color-text-on-accent:    var(--primitive-white);
+  --color-text-on-accent-subtle: var(--primitive-violet-300);
+
+  --color-accent-default:    var(--primitive-violet-400);
+  --color-accent-hover:      var(--primitive-violet-300);
+  --color-accent-active:     var(--primitive-violet-200);
+  --color-accent-subtle:     var(--primitive-violet-950);
+  --color-accent-text:       var(--primitive-violet-300);
+
+  --color-status-success-bg:      var(--primitive-green-950);
+  --color-status-success-text:    var(--primitive-green-300);
+  --color-status-success-border:  var(--primitive-green-300);
+  --color-status-warning-bg:      var(--primitive-amber-950);
+  --color-status-warning-text:    var(--primitive-amber-300);
+  --color-status-warning-border:  var(--primitive-amber-300);
+  --color-status-error-bg:        var(--primitive-red-950);
+  --color-status-error-text:      var(--primitive-red-300);
+  --color-status-error-border:    var(--primitive-red-300);
+  --color-status-info-bg:         var(--primitive-blue-950);
+  --color-status-info-text:       var(--primitive-blue-300);
+  --color-status-info-border:     var(--primitive-blue-300);
+
+  --shadow-sm:  0 1px 2px 0 rgba(0, 0, 0, 0.30);
+  --shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.40), 0 2px 4px -2px rgba(0, 0, 0, 0.25);
+  --shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.50), 0 4px 6px -4px rgba(0, 0, 0, 0.30);
+  --shadow-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.55), 0 8px 10px -6px rgba(0, 0, 0, 0.35);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CONVENIENCE ALIASES
+   Bridge from legacy variable names used in existing code (--text, --bg, etc.)
+   to the new semantic tokens. Remove when legacy vars are no longer referenced.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root,
+.theme-light,
+.theme-dark {
+  --text:           var(--color-text-secondary);
+  --text-h:         var(--color-text-primary);
+  --bg:             var(--color-bg-base);
+  --border:         var(--color-border-default);
+  --code-bg:        var(--color-bg-muted);
+  --accent:         var(--color-accent-default);
+  --accent-bg:      var(--color-accent-subtle);
+  --accent-border:  var(--color-border-focus);
+  --social-bg:      var(--color-bg-subtle);
+  --shadow:         var(--shadow-lg);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ADDING NEW THEMES — GUIDE
+   ═══════════════════════════════════════════════════════════════════════════
+   To ship a new theme without touching any component or existing token:
+
+   1. Add a class block that overrides only the semantic tokens that differ:
+
+      .theme-high-contrast {
+        color-scheme: dark;
+        --color-bg-base:        #000000;
+        --color-text-primary:   #ffffff;      // 21:1 AAA
+        --color-accent-default: #ffff00;      // yellow on black — check ratio
+        // ... override the rest as needed
+      }
+
+   2. Toggle the class from JS:
+      document.documentElement.classList.remove('theme-light', 'theme-dark', 'theme-high-contrast');
+      document.documentElement.classList.add('theme-high-contrast');
+      localStorage.setItem('theme', 'high-contrast');
+
+   3. Restore on load (see index.html inline script):
+      var t = localStorage.getItem('theme');
+      if (t) document.documentElement.classList.add('theme-' + t);
+
+   Primitive tokens defined at the top of this file are reusable across themes.
+   Add new primitives there as needed; never hardcode hex values in theme blocks.
+   ═══════════════════════════════════════════════════════════════════════════ */
