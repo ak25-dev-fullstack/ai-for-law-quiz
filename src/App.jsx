@@ -2471,6 +2471,48 @@ export default function LegalTechAiQuiz() {
                   color: "text-violet-400",
                   sources: [
                     {
+                      title: "Generative AI Survey H2 2025",
+                      author: "LexisNexis",
+                      year: "2025",
+                      note: "Survey of UK legal professionals on AI adoption, concerns, and culture.",
+                      url: "https://www.lexisnexis.co.uk/research-and-reports/generative-ai-survey-h2-2024.html",
+                    },
+                    {
+                      title: "2024 Generative AI in Professional Services Report",
+                      author: "Thomson Reuters Institute",
+                      year: "2024",
+                      note: "Industry report covering AI guideline adoption across law firms and corporate legal teams.",
+                      url: "https://www.thomsonreuters.com/content/dam/ewp-m/documents/thomsonreuters/en/pdf/reports/tr4322226_rgb.pdf",
+                    },
+                    {
+                      title: "Lawtech UK Investment Snapshot: H2 2025",
+                      author: "LawtechUK",
+                      year: "2026",
+                      note: "Tracks UK lawtech funding and acquisition activity across 2025; total investment £188.8m.",
+                      url: null,
+                    },
+                    {
+                      title: "Over 40% of agentic AI projects will be scrapped by 2027, Gartner says",
+                      author: "Reuters",
+                      year: "2025",
+                      note: "Gartner prediction that over 40% of agentic AI projects will be abandoned by 2027 due to inadequate governance.",
+                      url: "https://www.reuters.com/business/over-40-agentic-ai-projects-will-be-scrapped-by-2027-gartner-says-2025-06-25/",
+                    },
+                    {
+                      title: "AI Integration in UK Professional Services: Adoption, Risk and Governance",
+                      author: "UK Professional Services AI Research Group",
+                      year: "2025",
+                      note: "33% of legal AI users cite accidental bias as a concern; data on client consent practices and AI disclosure obligations in the UK legal sector; governance policy gaps.",
+                      url: null,
+                    },
+                    {
+                      title: "LawtechUK Consumer-Facing Legal Technology: Adoption and Trust Report 2025",
+                      author: "LawtechUK",
+                      year: "2025",
+                      note: "Consumer attitudes to AI in legal services; transparency expectations; SRA regulatory environment for B2C lawtech; client disclosure landscape for AI-assisted legal work.",
+                      url: "https://lawtechuk.io",
+                    },
+                    {
                       title: "Clio Legal Trends Report — UK Edition",
                       author: "Clio",
                       year: "2024",
@@ -2491,19 +2533,33 @@ export default function LegalTechAiQuiz() {
                       note: "Longitudinal survey data on technology adoption, AI investment, and productivity impact in law firms.",
                       url: null,
                     },
-                    {
-                      title: "The State of AI in Legal — UK Focus",
-                      author: "LexisNexis",
-                      year: "2024",
-                      note: "Tool usage, governance readiness, and verification practices among UK legal practitioners.",
-                      url: null,
-                    },
                   ],
                 },
                 {
                   category: "Regulation & Professional Conduct",
                   color: "text-sky-400",
                   sources: [
+                    {
+                      title: "AI and Small Law Firms: Guidance on Regulatory Obligations",
+                      author: "Solicitors Regulation Authority",
+                      year: "2025",
+                      note: "SRA guidance on AI use by solicitors; client confidentiality obligations when using AI tools; anticipated disclosure requirements; regulatory framework for AI-processed client data.",
+                      url: "https://www.sra.org.uk",
+                    },
+                    {
+                      title: "AI in Legal Practice: Liability, Sanctions and the Practising Certificate Gap",
+                      author: "Maria Terzidou",
+                      year: "2025",
+                      note: "Analysis of court sanctions against solicitors for AI-generated fake citations; professional liability framework for AI outputs; the practising certificate gap in AI accountability.",
+                      url: null,
+                    },
+                    {
+                      title: "Embracing Innovation: AI Governance in UK Professional Services",
+                      author: "UK Professional Services Forum",
+                      year: "2025",
+                      note: "Survey finding that nearly half of professional services firms have no formal AI policy; analysis of PI/D&O exposure from ungoverned AI use; governance framework recommendations.",
+                      url: null,
+                    },
                     {
                       title: "AI and the Legal Profession: Guidance for Solicitors",
                       author: "Solicitors Regulation Authority (SRA)",
@@ -2531,6 +2587,27 @@ export default function LegalTechAiQuiz() {
                   category: "AI Risk & Hallucination",
                   color: "text-red-400",
                   sources: [
+                    {
+                      title: "Hallucination-Free? Assessing the Reliability of Leading AI Legal Research Tools",
+                      author: "Magesh, V., Surani, F., Dahl, M., Suzgun, M., Manning, C.D., & Ho, D.E.",
+                      year: "2025",
+                      note: "First preregistered empirical study of hallucination rates in legal AI tools including Lexis+ AI and Westlaw.",
+                      url: "https://doi.org/10.1111/jels.12413",
+                    },
+                    {
+                      title: "Large Legal Fictions: Profiling Legal Hallucinations in Large Language Models",
+                      author: "Dahl, M. et al.",
+                      year: "2024",
+                      note: "Foundational study establishing hallucination rates of 58–82% in general-purpose LLMs on legal queries.",
+                      url: null,
+                    },
+                    {
+                      title: "Algorithmic Fairness in Criminal Justice Risk Assessment: A Systematic Review",
+                      author: "Jakob Nielsen et al.",
+                      year: "2024",
+                      note: "Evidence that AI risk-assessment tools in criminal justice settings have exacerbated racial disparities; analysis of COMPAS and analogous tools; recommendations for independent bias auditing.",
+                      url: null,
+                    },
                     {
                       title: "Hallucination in Large Language Models: A Survey",
                       author: "Huang et al.",
