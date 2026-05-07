@@ -2568,6 +2568,33 @@ export default function LegalTechAiQuiz() {
                     },
                   ],
                 },
+                {
+                  category: "Sustainable Development Goals",
+                  color: "text-emerald-400",
+                  sources: [
+                    {
+                      title: "SDG 16 — Peace, Justice and Strong Institutions",
+                      author: "United Nations",
+                      year: "2015–present",
+                      note: "Framework for access to justice, rule of law, and accountable institutions. Relevant to AI's role in democratising or restricting legal access.",
+                      url: "https://sdgs.un.org/goals/goal16",
+                    },
+                    {
+                      title: "SDG 10 — Reduced Inequalities",
+                      author: "United Nations",
+                      year: "2015–present",
+                      note: "Goal addressing inequality within and between countries. Relevant to differential AI adoption across firm sizes and geographies.",
+                      url: "https://sdgs.un.org/goals/goal10",
+                    },
+                    {
+                      title: "SDG 8 — Decent Work and Economic Growth",
+                      author: "United Nations",
+                      year: "2015–present",
+                      note: "Goal covering productivity, workforce transformation, and sustainable economic activity. Relevant to AI's impact on legal employment.",
+                      url: "https://sdgs.un.org/goals/goal8",
+                    },
+                  ],
+                },
               ].map(({ category, color, sources }) => (
                 <div key={category} className="mb-10">
                   <p className={`mb-4 text-xs font-semibold uppercase tracking-widest ${color}`}>{category}</p>
