@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 import {
   Briefcase, Scale, ShieldAlert, Brain,
   ArrowRight, RotateCcw, CheckCircle2,
-  Check, AlertTriangle, Lightbulb, BookOpen, ExternalLink, ArrowLeft, Newspaper,
-  BarChart2, Maximize2,
+  Check, AlertTriangle, Lightbulb, BookOpen, ExternalLink, ArrowLeft,
+  BarChart2, Maximize2, ChevronDown,
 } from "lucide-react";
 import { computeScores } from "./scoring";
 
@@ -306,7 +306,7 @@ const INSIGHT_STYLES = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// QUESTION BANK (40 questions)
+// QUESTION BANK (20 questions)
 // ─────────────────────────────────────────────────────────────────────────────
 
 const questions = [
@@ -358,49 +358,10 @@ const questions = [
     type: "likert",
     likertLabels: ["Not at all comfortable", "Very comfortable"],
   },
-  {
-    id: 6, section: "Practical AI Use", domain: "Usage Sophistication", icon: Briefcase,
-    title: "What level of output do you expect from AI?",
-    type: "single",
-    options: [
-      { text: "Brainstorming only" }, { text: "Rough outline" },
-      { text: "Draft requiring edits" }, { text: "Near-final draft" },
-    ],
-  },
-  {
-    id: 7, section: "Practical AI Use", domain: "Usage Sophistication", icon: Briefcase,
-    title: "How often do you use AI to save time on repetitive tasks?",
-    type: "likert",
-    likertLabels: ["Never", "Very frequently"],
-  },
-  {
-    id: 8, section: "Practical AI Use", domain: "Usage Sophistication", icon: Briefcase,
-    title: "Compared to 6 months ago, your AI usage is:",
-    type: "single",
-    options: [
-      { text: "Much lower" }, { text: "Slightly lower" }, { text: "About the same" },
-      { text: "Slightly higher" }, { text: "Much higher" },
-    ],
-  },
-  {
-    id: 9, section: "Practical AI Use", domain: "Governance Alignment", icon: Scale,
-    title: "Who primarily selected the AI tools you use?",
-    type: "single",
-    options: [
-      { text: "I chose them myself" }, { text: "My team selected them informally" },
-      { text: "IT or innovation team selected them" }, { text: "Firm leadership selected them" },
-    ],
-  },
-  {
-    id: 10, section: "Practical AI Use", domain: "Usage Sophistication", icon: Briefcase,
-    title: "Which type of AI tool do you use most?",
-    type: "single",
-    options: [{ text: "General-purpose AI" }, { text: "Legal-specific AI" }, { text: "Both equally" }],
-  },
 
   // ══ SECTION: Verification Discipline ═══════════════════════════════════════
   {
-    id: 11, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
+    id: 6, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
     title: "How do you handle AI-generated citations?",
     type: "single",
     options: [
@@ -410,7 +371,7 @@ const questions = [
     ],
   },
   {
-    id: 12, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
+    id: 7, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
     title: "How do you validate AI-generated legal conclusions?",
     type: "single",
     options: [
@@ -420,32 +381,7 @@ const questions = [
     ],
   },
   {
-    id: 13, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
-    title: "How likely are you to trust AI outputs before checking them?",
-    type: "likert",
-    likertLabels: ["Never trust without checking", "Always trust immediately"],
-    reverse: true,
-  },
-  {
-    id: 14, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
-    title: "How often do you verify the sources behind AI outputs?",
-    type: "likert",
-    likertLabels: ["Never", "Always"],
-  },
-  {
-    id: 15, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
-    title: "How often do you check jurisdictional accuracy in AI outputs?",
-    type: "likert",
-    likertLabels: ["Never", "Always"],
-  },
-  {
-    id: 16, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
-    title: "How confident are you in recognising misleading or overconfident AI outputs?",
-    type: "likert",
-    likertLabels: ["Not at all confident", "Very confident"],
-  },
-  {
-    id: 17, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
+    id: 8, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
     title: "How often do you rely on AI as a primary answer source?",
     type: "single",
     options: [
@@ -454,7 +390,7 @@ const questions = [
     ],
   },
   {
-    id: 18, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
+    id: 9, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
     title: "Scenario: AI provides case citations you have not read. What do you do?",
     type: "single",
     options: [
@@ -464,16 +400,7 @@ const questions = [
     ],
   },
   {
-    id: 19, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
-    title: "Scenario: AI gives a correct-looking answer but from the wrong jurisdiction. What do you do?",
-    type: "single",
-    options: [
-      { text: "Accept the answer" }, { text: "Check jurisdiction and adjust" },
-      { text: "Re-run query specifying jurisdiction" },
-    ],
-  },
-  {
-    id: 20, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
+    id: 10, section: "Verification Discipline", domain: "Verification Discipline", icon: Brain,
     title: "Scenario: AI revises a contract clause and subtly changes risk allocation. What do you do?",
     type: "single",
     options: [
@@ -484,13 +411,13 @@ const questions = [
 
   // ══ SECTION: Legal Risk Awareness ══════════════════════════════════════════
   {
-    id: 21, section: "Legal Risk Awareness", domain: "Legal Risk Awareness", icon: ShieldAlert,
+    id: 11, section: "Legal Risk Awareness", domain: "Legal Risk Awareness", icon: ShieldAlert,
     title: "How aware are you that AI can generate incorrect but convincing legal outputs?",
     type: "likert",
     likertLabels: ["Not at all aware", "Very aware"],
   },
   {
-    id: 22, section: "Legal Risk Awareness", domain: "Legal Risk Awareness", icon: ShieldAlert,
+    id: 12, section: "Legal Risk Awareness", domain: "Legal Risk Awareness", icon: ShieldAlert,
     title: "Which risks do you associate with AI?",
     subtitle: "Select all that apply.",
     type: "multi",
@@ -500,7 +427,7 @@ const questions = [
     ],
   },
   {
-    id: 23, section: "Legal Risk Awareness", domain: "Legal Risk Awareness", icon: ShieldAlert,
+    id: 13, section: "Legal Risk Awareness", domain: "Legal Risk Awareness", icon: ShieldAlert,
     title: "What types of data have you entered into AI tools?",
     subtitle: "Select all that apply.",
     type: "multi",
@@ -510,31 +437,13 @@ const questions = [
     ],
   },
   {
-    id: 24, section: "Legal Risk Awareness", domain: "Legal Risk Awareness", icon: ShieldAlert,
-    title: "How confident are you in distinguishing safe vs unsafe prompting?",
-    type: "likert",
-    likertLabels: ["Not at all confident", "Very confident"],
-  },
-  {
-    id: 25, section: "Legal Risk Awareness", domain: "Legal Risk Awareness", icon: ShieldAlert,
-    title: "How aware are you that legal AI tools do not eliminate hallucination risk?",
-    type: "likert",
-    likertLabels: ["Not at all aware", "Very aware"],
-  },
-  {
-    id: 26, section: "Legal Risk Awareness", domain: "Legal Risk Awareness", icon: ShieldAlert,
+    id: 14, section: "Legal Risk Awareness", domain: "Legal Risk Awareness", icon: ShieldAlert,
     title: "How confident are you in identifying confidentiality risks when using AI?",
     type: "likert",
     likertLabels: ["Not at all confident", "Very confident"],
   },
   {
-    id: 27, section: "Legal Risk Awareness", domain: "Governance Alignment", icon: Scale,
-    title: "How prepared are you to explain AI-related risks to a client?",
-    type: "likert",
-    likertLabels: ["Not at all prepared", "Very prepared"],
-  },
-  {
-    id: 28, section: "Legal Risk Awareness", domain: "Legal Risk Awareness", icon: ShieldAlert,
+    id: 15, section: "Legal Risk Awareness", domain: "Legal Risk Awareness", icon: ShieldAlert,
     title: "Scenario: You need to summarise a client document using a public AI tool. What do you do?",
     type: "single",
     options: [
@@ -542,24 +451,19 @@ const questions = [
       { text: "Check policy and approval before use" },
     ],
   },
-  {
-    id: 29, section: "Legal Risk Awareness", domain: "Verification Discipline", icon: Brain,
-    title: "Scenario: AI gives a confident but incorrect answer. What is your response?",
-    type: "single",
-    options: [
-      { text: "Accept it" }, { text: "Double-check sources" }, { text: "Re-run and validate externally" },
-    ],
-  },
-  {
-    id: 30, section: "Legal Risk Awareness", domain: "Legal Risk Awareness", icon: ShieldAlert,
-    title: "How aware are you of bias risks in AI outputs?",
-    type: "likert",
-    likertLabels: ["Not at all aware", "Very aware"],
-  },
 
   // ══ SECTION: Governance Alignment ══════════════════════════════════════════
   {
-    id: 31, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
+    id: 16, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
+    title: "Who primarily selected the AI tools you use?",
+    type: "single",
+    options: [
+      { text: "I chose them myself" }, { text: "My team selected them informally" },
+      { text: "IT or innovation team selected them" }, { text: "Firm leadership selected them" },
+    ],
+  },
+  {
+    id: 17, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
     title: "Does your organisation have an AI policy?",
     type: "single",
     options: [
@@ -568,7 +472,7 @@ const questions = [
     ],
   },
   {
-    id: 32, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
+    id: 18, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
     title: "Have you received training on AI use?",
     type: "single",
     options: [
@@ -577,56 +481,16 @@ const questions = [
     ],
   },
   {
-    id: 33, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
+    id: 19, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
     title: "Do you know how to escalate AI-related risks in your organisation?",
     type: "likert",
     likertLabels: ["Not at all", "Completely clear"],
   },
   {
-    id: 34, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
-    title: "How often do you use only approved AI tools?",
-    type: "likert",
-    likertLabels: ["Never", "Always"],
-  },
-  {
-    id: 35, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
+    id: 20, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
     title: "How aware are you of which AI tools are approved by your organisation?",
     type: "likert",
     likertLabels: ["Not at all aware", "Fully aware"],
-  },
-  {
-    id: 36, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
-    title: "What controls are expected when using AI in your organisation?",
-    subtitle: "Select all that apply.",
-    type: "multi",
-    options: [
-      { text: "Verify outputs" }, { text: "Human review" },
-      { text: "Disclosure to supervisor" }, { text: "Logging / audit trail" },
-    ],
-  },
-  {
-    id: 37, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
-    title: "How confident are you explaining how AI was used in your work?",
-    type: "likert",
-    likertLabels: ["Not at all confident", "Very confident"],
-  },
-  {
-    id: 38, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
-    title: "How aware are you of when AI use should be disclosed to clients?",
-    type: "likert",
-    likertLabels: ["Not at all aware", "Very aware"],
-  },
-  {
-    id: 39, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
-    title: "How clear are expectations in your team around AI use?",
-    type: "likert",
-    likertLabels: ["Not at all clear", "Very clear"],
-  },
-  {
-    id: 40, section: "Governance Alignment", domain: "Governance Alignment", icon: Scale,
-    title: "How confident are you that your AI use complies with organisational expectations?",
-    type: "likert",
-    likertLabels: ["Not at all confident", "Very confident"],
   },
 ];
 
@@ -670,123 +534,6 @@ function Pill({ children }) {
 const selectCls =
   "w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 h-10 text-sm text-zinc-100 outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition cursor-pointer";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// NEWS OVERLAY COMPONENT
-// ─────────────────────────────────────────────────────────────────────────────
-
-const NEWS_TABS = ["LegalTech News", "Regulations", "Conferences"];
-
-const NEWS_CONTENT = {
-  "LegalTech News": [
-    { date: "Mar 2026", tag: "Funding",    title: "Harvey AI raises $300M Series D at $3B valuation", body: "The legal-specific AI firm secured a landmark round led by Sequoia, expanding into IP, tax, and cross-border M&A practice areas across the UK and EU." },
-    { date: "Feb 2026", tag: "Adoption",   title: "Allen & Overy expands Harvey AI rollout to all UK associates", body: "Following a successful pilot with senior associates, A&O has mandated Harvey across its London offices for drafting and due diligence support." },
-    { date: "Feb 2026", tag: "Product",    title: "Microsoft Copilot for Legal launches UK beta with Thomson Reuters", body: "The integration connects Copilot directly to Westlaw UK, enabling in-document legal research without leaving Word or Outlook." },
-    { date: "Jan 2026", tag: "Risk",       title: "Law Society warns AI hallucinations contributing to client harm", body: "A new briefing paper documents 14 reported cases where solicitors relied on AI-generated legal analysis without verification, resulting in negligence claims." },
-    { date: "Dec 2025", tag: "Research",   title: "Clio Legal Trends: UK AI adoption up 40% year-on-year", body: "The annual report shows that 96% of UK law firms now use some form of AI, with legal-specific tools growing fastest among mid-sized and large firms." },
-    { date: "Nov 2025", tag: "Governance", title: "SRA opens first formal investigation into AI-related conduct breach", body: "The regulator confirmed it is investigating a firm where AI-generated advice was delivered to a client without adequate review or disclosure." },
-  ],
-  "Regulations": [
-    { date: "Aug 2025", tag: "EU",         title: "EU AI Act: high-risk AI provisions enter enforcement", body: "Systems used in legal interpretation, dispute resolution, and access-to-justice contexts now fall under mandatory conformity assessment and human oversight requirements." },
-    { date: "Q1 2026", tag: "SRA",         title: "SRA AI Guidance Update — draft for consultation", body: "The Solicitors Regulation Authority published updated draft guidance on AI use, including new expectations around output verification, client disclosure, and record-keeping." },
-    { date: "2025",    tag: "ICO",         title: "ICO: AI and data protection — guidance for legal services", body: "The Information Commissioner's Office clarified that entering client personal data into general-purpose AI tools without a lawful basis and a data processing agreement constitutes a breach of UK GDPR." },
-    { date: "2024",    tag: "BSB",         title: "Bar Standards Board publishes AI position statement", body: "Barristers are reminded that core duties — including competence, confidentiality, and candour to the court — apply fully when AI is used in any part of case preparation." },
-    { date: "Ongoing", tag: "LSB",         title: "Legal Services Board: regulatory review of AI in legal practice", body: "The LSB is conducting a cross-regulator review examining whether existing frameworks are sufficient for AI oversight, with recommendations expected in late 2026." },
-    { date: "2025",    tag: "UK Gov",      title: "UK AI Opportunities Action Plan — legal sector implications", body: "The government's national AI strategy includes provisions affecting regulated professions, with the Ministry of Justice expected to publish sector-specific guidance in 2026." },
-  ],
-  "Conferences": [
-    { date: "May 2026",  tag: "London",    title: "LegalTech London 2026", body: "The UK's largest dedicated legal technology conference. Themes include AI governance, procurement frameworks, and responsible automation in legal practice." },
-    { date: "Jun 2026",  tag: "London",    title: "Future of Law Summit", body: "Senior partner and GC-focused event exploring AI strategy, workforce transformation, and the evolving client relationship in an AI-enabled legal market." },
-    { date: "Jul 2026",  tag: "Online",    title: "Law Society AI Webinar Series — Summer 2026", body: "Monthly practitioner-focused sessions covering the SRA guidance updates, verification best practice, and case studies from early AI adopters." },
-    { date: "Sep 2026",  tag: "Oxford",    title: "AI & Law Symposium — Oxford Internet Institute", body: "Academic-practitioner conference examining algorithmic decision-making in courts, bias in legal AI, and the implications of LLMs for access to justice." },
-    { date: "Oct 2026",  tag: "London",    title: "Legal Geek Annual Conference", body: "The flagship community event for legal innovation. Expected attendance 3,000+. Key tracks on AI implementation, procurement, and junior lawyer AI literacy." },
-    { date: "Nov 2026",  tag: "Brussels",  title: "European Legal Innovation Forum", body: "Cross-jurisdictional focus on AI regulation, EU AI Act compliance for law firms operating across member states, and comparative governance models." },
-  ],
-};
-
-const TAG_COLORS = {
-  Funding:    "border-violet-500/30 bg-violet-500/10 text-violet-300",
-  Adoption:   "border-blue-500/30 bg-blue-500/10 text-blue-300",
-  Product:    "border-sky-500/30 bg-sky-500/10 text-sky-300",
-  Risk:       "border-red-500/30 bg-red-500/10 text-red-300",
-  Research:   "border-amber-500/30 bg-amber-500/10 text-amber-300",
-  Governance: "border-purple-500/30 bg-purple-500/10 text-purple-300",
-  EU:         "border-blue-500/30 bg-blue-500/10 text-blue-300",
-  SRA:        "border-violet-500/30 bg-violet-500/10 text-violet-300",
-  ICO:        "border-teal-500/30 bg-teal-500/10 text-teal-300",
-  BSB:        "border-orange-500/30 bg-orange-500/10 text-orange-300",
-  LSB:        "border-zinc-500/30 bg-zinc-500/10 text-zinc-300",
-  "UK Gov":   "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
-  London:     "border-violet-500/30 bg-violet-500/10 text-violet-300",
-  Online:     "border-sky-500/30 bg-sky-500/10 text-sky-300",
-  Oxford:     "border-blue-500/30 bg-blue-500/10 text-blue-300",
-  Brussels:   "border-amber-500/30 bg-amber-500/10 text-amber-300",
-};
-
-function NewsOverlay({ onClose }) {
-  const [activeTab, setActiveTab] = useState("LegalTech News");
-  const items = NEWS_CONTENT[activeTab];
-
-  return (
-    <motion.div
-      key="news"
-      initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 8 }} transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-50 overflow-y-auto bg-zinc-950"
-    >
-      <header className="sticky top-0 z-10 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3 sm:px-6">
-          <button
-            onClick={onClose}
-            className="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200 active:scale-95"
-          >
-            <ArrowLeft className="h-4 w-4" /> Back
-          </button>
-          <div className="flex items-center gap-2 text-sm font-semibold text-zinc-100">
-            <Newspaper className="h-4 w-4 text-violet-400" /> News
-          </div>
-          <div className="w-20" />
-        </div>
-
-        {/* Tabs */}
-        <div className="mx-auto max-w-4xl px-4 sm:px-6">
-          <div className="flex gap-0 border-b border-zinc-800">
-            {NEWS_TABS.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2.5 text-xs font-semibold transition border-b-2 -mb-px ${
-                  activeTab === tab
-                    ? "border-violet-500 text-violet-400"
-                    : "border-transparent text-zinc-500 hover:text-zinc-300"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
-        <p className="mb-6 text-xs text-zinc-600 italic">* Content is illustrative placeholder material. Dates and details are for demonstration purposes only.</p>
-        <div className="space-y-3">
-          {items.map(({ date, tag, title, body }) => (
-            <div key={title} className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-              <div className="mb-2 flex flex-wrap items-center gap-2">
-                <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold ${TAG_COLORS[tag] ?? "border-zinc-700 bg-zinc-800 text-zinc-400"}`}>
-                  {tag}
-                </span>
-                <span className="text-xs text-zinc-600">{date}</span>
-              </div>
-              <p className="mb-1.5 text-sm font-semibold text-zinc-100">{title}</p>
-              <p className="text-xs leading-5 text-zinc-400">{body}</p>
-            </div>
-          ))}
-        </div>
-      </main>
-    </motion.div>
-  );
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SOURCES
@@ -811,11 +558,11 @@ const SOURCES = {
   },
   dahl2024: {
     title: "Large Legal Fictions: Profiling Legal Hallucinations in Large Language Models",
-    authors: "Dahl, M. et al.",
-    publisher: "Journal of Empirical Legal Studies",
+    authors: "Dahl, M., Magesh, V., Suzgun, M., & Ho, D.E.",
+    publisher: "Journal of Legal Analysis",
     year: "2024",
-    description: "Foundational study establishing hallucination rates of 58–82% in general-purpose LLMs on legal queries.",
-    url: null,
+    description: "Foundational study establishing hallucination rates of 58–88% in general-purpose LLMs on legal queries (58% with GPT-4, up to 88% with Llama 2).",
+    url: "https://doi.org/10.1093/jla/laae003",
   },
   thomsonreuters2024: {
     title: "2024 Generative AI in Professional Services Report",
@@ -830,8 +577,8 @@ const SOURCES = {
     authors: "LawtechUK",
     publisher: "LawtechUK",
     year: "2026",
-    description: "Tracks UK lawtech funding and acquisition activity across 2025; total investment £188.8m.",
-    url: null,
+    description: "Tracks UK lawtech funding and acquisition activity across 2025; total investment £188.8m, a 35% increase on 2024.",
+    url: "https://lawtechuk.io/reports/lawtechuk-investment-snapshot",
   },
   gartner2025: {
     title: "Over 40% of agentic AI projects will be scrapped by 2027, Gartner says",
@@ -841,29 +588,13 @@ const SOURCES = {
     description: "Gartner prediction that over 40% of agentic AI projects will be abandoned by 2027 due to inadequate governance.",
     url: "https://www.reuters.com/business/over-40-agentic-ai-projects-will-be-scrapped-by-2027-gartner-says-2025-06-25/",
   },
-  terzidou_2025: {
-    title: "AI in Legal Practice: Liability, Sanctions and the Practising Certificate Gap",
-    authors: "Maria Terzidou",
-    publisher: "BILETA / Legal Studies",
-    year: "2025",
-    description: "Analysis of court sanctions against solicitors for AI-generated fake citations; professional liability framework for AI outputs; the practising certificate gap in AI accountability.",
-    url: null,
-  },
-  aiIntegrationUK: {
-    title: "AI Integration in UK Professional Services: Adoption, Risk and Governance",
-    authors: "UK Professional Services AI Research Group",
-    publisher: "UK Professional Services AI Research Group",
-    year: "2025",
-    description: "33% of legal AI users cite accidental bias as a concern; data on client consent practices and AI disclosure obligations in the UK legal sector; governance policy gaps.",
-    url: null,
-  },
-  nielsen_2024: {
-    title: "Algorithmic Fairness in Criminal Justice Risk Assessment: A Systematic Review",
-    authors: "Jakob Nielsen et al.",
-    publisher: "Journal of Criminal Law and Criminology",
+  clio: {
+    title: "Legal Trends Report 2024",
+    authors: "Clio",
+    publisher: "Clio",
     year: "2024",
-    description: "Evidence that AI risk-assessment tools in criminal justice settings have exacerbated racial disparities; analysis of COMPAS and analogous tools; recommendations for independent bias auditing.",
-    url: null,
+    description: "Annual benchmarking report on UK legal practice trends, including AI adoption rates among solicitors and law firms.",
+    url: "https://www.clio.com/uk/blog/ai-technology-trends/",
   },
   sraSmallFirms: {
     title: "AI and Small Law Firms: Guidance on Regulatory Obligations",
@@ -872,14 +603,6 @@ const SOURCES = {
     year: "2025",
     description: "SRA guidance on AI use by solicitors; client confidentiality obligations when using AI tools; anticipated disclosure requirements; regulatory framework for AI-processed client data.",
     url: "https://www.sra.org.uk",
-  },
-  embracingInnovation: {
-    title: "Embracing Innovation: AI Governance in UK Professional Services",
-    authors: "UK Professional Services Forum",
-    publisher: "UK Professional Services Forum",
-    year: "2025",
-    description: "Survey finding that nearly half of professional services firms have no formal AI policy; analysis of PI/D&O exposure from ungoverned AI use; governance framework recommendations.",
-    url: null,
   },
   lawtechB2C_2025: {
     title: "LawtechUK Consumer-Facing Legal Technology: Adoption and Trust Report 2025",
@@ -900,7 +623,7 @@ export default function LegalTechAiQuiz() {
   const [showSources, setShowSources] = useState(false);
   const [showLearnMore, setShowLearnMore] = useState(false);
   const [showDashboard, setShowDashboard] = useState(false);
-  const [showNews, setShowNews] = useState(false);
+  const [openSections, setOpenSections] = useState({ reality: false, upside: false, risk: false });
   const [sourceModal, setSourceModal] = useState(null);
   const [step, setStep]       = useState("intro");
   const [profile, setProfile] = useState({ name: "", role: "", org: "", experience: "" });
@@ -1012,17 +735,6 @@ export default function LegalTechAiQuiz() {
             </div>
             <div className="relative group">
               <button
-                onClick={() => setShowNews(true)}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-zinc-800 hover:text-zinc-300 active:scale-95"
-              >
-                <Newspaper className="h-4 w-4" />
-              </button>
-              <span className="pointer-events-none absolute top-full left-1/2 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-800 px-2 py-1 text-xs text-zinc-200 opacity-0 transition-opacity group-hover:opacity-100">
-                News
-              </span>
-            </div>
-            <div className="relative group">
-              <button
                 onClick={() => setShowSources(true)}
                 className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-zinc-800 hover:text-zinc-300 active:scale-95"
               >
@@ -1094,9 +806,20 @@ export default function LegalTechAiQuiz() {
 
         {/* ── THE REALITY ── */}
         <div className="mb-10 sm:mb-12">
-          <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-sky-400">The reality</p>
-          <h2 className="mb-2 text-lg font-semibold text-zinc-100">What AI tools are UK lawyers actually using?</h2>
-          <p className="mb-6 max-w-2xl text-sm leading-6 text-zinc-400">
+          <button
+            onClick={() => setOpenSections(s => ({ ...s, reality: !s.reality }))}
+            className="group mb-1 flex w-full items-center justify-between gap-4 text-left"
+          >
+            <div>
+              <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-sky-400">The reality</p>
+              <h2 className="text-lg font-semibold text-zinc-100">What AI tools are UK lawyers actually using?</h2>
+            </div>
+            <ChevronDown className={`h-4 w-4 shrink-0 text-zinc-500 transition-transform duration-200 ${openSections.reality ? "rotate-0" : "-rotate-90"}`} />
+          </button>
+          <AnimatePresence initial={false}>
+            {openSections.reality && (
+              <motion.div key="reality-body" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} style={{ overflow: "hidden" }}>
+          <p className="mt-4 mb-6 max-w-2xl text-sm leading-6 text-zinc-400">
             Adoption is high — but the type of tool and the culture surrounding it tell a more complicated story.
           </p>
 
@@ -1130,15 +853,23 @@ export default function LegalTechAiQuiz() {
               </div>
               <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2.5">
                 <p className="text-xs leading-5 text-amber-300">
-                  <span className="font-semibold">Note:</span> General tools carry the highest hallucination risk — up to 82% error rate on legal queries (Dahl et al., 2024)
+                  <span className="font-semibold">Note:</span> General tools carry the highest hallucination risk — up to 88% error rate on legal queries (Dahl et al., 2024)
                 </p>
               </div>
-              <button
-                onClick={() => setSourceModal(SOURCES.lexisnexis)}
-                className="inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
-              >
-                Source
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setSourceModal(SOURCES.lexisnexis)}
+                  className="inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
+                >
+                  LexisNexis Survey
+                </button>
+                <button
+                  onClick={() => setSourceModal(SOURCES.dahl2024)}
+                  className="inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
+                >
+                  Dahl et al., 2024
+                </button>
+              </div>
             </div>
 
             {/* Panel 2 — AI culture */}
@@ -1177,25 +908,39 @@ export default function LegalTechAiQuiz() {
                   onClick={() => setSourceModal(SOURCES.lexisnexis)}
                   className="inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
                 >
-                  Source
+                  LexisNexis Survey
                 </button>
                 <button
                   onClick={() => setSourceModal(SOURCES.thomsonreuters2024)}
                   className="inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
                 >
-                  Source
+                  Thomson Reuters
                 </button>
               </div>
             </div>
 
           </div>
-
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* ── THE UPSIDE ── */}
         <div className="mb-10 sm:mb-12">
-          <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-violet-400">The upside</p>
-          <h2 className="mb-6 text-lg font-semibold text-zinc-100">What responsible AI adoption delivers</h2>
+          <button
+            onClick={() => setOpenSections(s => ({ ...s, upside: !s.upside }))}
+            className="group mb-1 flex w-full items-center justify-between gap-4 text-left"
+          >
+            <div>
+              <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-violet-400">The upside</p>
+              <h2 className="text-lg font-semibold text-zinc-100">What responsible AI adoption delivers</h2>
+            </div>
+            <ChevronDown className={`h-4 w-4 shrink-0 text-zinc-500 transition-transform duration-200 ${openSections.upside ? "rotate-0" : "-rotate-90"}`} />
+          </button>
+          <AnimatePresence initial={false}>
+            {openSections.upside && (
+              <motion.div key="upside-body" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} style={{ overflow: "hidden" }}>
+          <div className="mt-4" />
 
           {/* Horizontal bar chart — how lawyers use time saved */}
           <div className="mb-6 rounded-xl border border-zinc-800 bg-zinc-900 p-5">
@@ -1237,7 +982,7 @@ export default function LegalTechAiQuiz() {
               onClick={() => setSourceModal(SOURCES.lexisnexis)}
               className="mt-4 inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
             >
-              Source
+              LexisNexis Survey
             </button>
           </div>
 
@@ -1258,7 +1003,7 @@ export default function LegalTechAiQuiz() {
                 onClick={() => setSourceModal(SOURCES.lawtechuk2026)}
                 className="inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
               >
-                Source
+                LawtechUK Investment Snapshot
               </button>
             </div>
 
@@ -1286,18 +1031,32 @@ export default function LegalTechAiQuiz() {
                 onClick={() => setSourceModal(SOURCES.lexisnexis)}
                 className="inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
               >
-                Source
+                LexisNexis Survey
               </button>
             </div>
 
           </div>
-
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* ── THE RISK ── */}
         <div className="mb-10 sm:mb-12">
-          <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-red-400">The risk</p>
-          <h2 className="mb-6 text-lg font-semibold text-zinc-100">Why unchecked AI use is dangerous in law</h2>
+          <button
+            onClick={() => setOpenSections(s => ({ ...s, risk: !s.risk }))}
+            className="group mb-1 flex w-full items-center justify-between gap-4 text-left"
+          >
+            <div>
+              <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-red-400">The risk</p>
+              <h2 className="text-lg font-semibold text-zinc-100">Why unchecked AI use is dangerous in law</h2>
+            </div>
+            <ChevronDown className={`h-4 w-4 shrink-0 text-zinc-500 transition-transform duration-200 ${openSections.risk ? "rotate-0" : "-rotate-90"}`} />
+          </button>
+          <AnimatePresence initial={false}>
+            {openSections.risk && (
+              <motion.div key="risk-body" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} style={{ overflow: "hidden" }}>
+          <div className="mt-4" />
 
           <div className="flex flex-col justify-between rounded-xl border border-red-500/25 bg-gradient-to-br from-red-950/60 via-zinc-900 to-zinc-900 p-6">
             <AlertTriangle className="h-7 w-7 text-red-400 mb-4 shrink-0" />
@@ -1329,29 +1088,29 @@ export default function LegalTechAiQuiz() {
               </div>
               <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-4 text-center">
                 <p className="text-xs font-semibold uppercase tracking-widest text-red-400 mb-2">General AI reality</p>
-                <p className="text-3xl font-extrabold tabular-nums text-red-400">58–82%</p>
+                <p className="text-3xl font-extrabold tabular-nums text-red-400">58–88%</p>
                 <p className="mt-2 text-xs leading-4 text-zinc-400">hallucination rate for general-purpose LLMs on legal queries</p>
               </div>
             </div>
             <p className="mt-3 text-xs leading-5 text-zinc-500">The fear is real — but tool choice matters enormously.</p>
-            <div className="mt-3 flex gap-2">
+            <div className="mt-3 flex flex-wrap gap-2">
               <button
                 onClick={() => setSourceModal(SOURCES.lexisnexis)}
                 className="inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
               >
-                Source
+                LexisNexis Survey
               </button>
               <button
                 onClick={() => setSourceModal(SOURCES.magesh2025)}
                 className="inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
               >
-                Source
+                Magesh et al., 2025
               </button>
               <button
                 onClick={() => setSourceModal(SOURCES.dahl2024)}
                 className="inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
               >
-                Source
+                Dahl et al., 2024
               </button>
             </div>
           </div>
@@ -1382,7 +1141,7 @@ export default function LegalTechAiQuiz() {
               onClick={() => setSourceModal(SOURCES.lexisnexis)}
               className="mt-4 inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
             >
-              Source
+              LexisNexis Survey
             </button>
           </div>
 
@@ -1402,21 +1161,24 @@ export default function LegalTechAiQuiz() {
                 onClick={() => setSourceModal(SOURCES.thomsonreuters2024)}
                 className="inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
               >
-                Source
+                Thomson Reuters
               </button>
               <button
                 onClick={() => setSourceModal(SOURCES.lexisnexis)}
                 className="inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
               >
-                Source
+                LexisNexis Survey
               </button>
             </div>
           </div>
 
           <p className="mt-4 text-xs text-zinc-600 italic">
             * Gartner (via Reuters, June 2025) predicts over 40% of agentic AI projects will be scrapped by 2027 due to inadequate governance.{" "}
-            <button onClick={() => setSourceModal(SOURCES.gartner2025)} className="underline underline-offset-2 hover:text-zinc-400 transition">Source</button>
+            <button onClick={() => setSourceModal(SOURCES.gartner2025)} className="underline underline-offset-2 hover:text-zinc-400 transition">Reuters</button>
           </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* ── Page heading ── */}
@@ -1428,8 +1190,30 @@ export default function LegalTechAiQuiz() {
             What’s your LegalTech<br className="hidden sm:block" /> competency profile?
           </h1>
           <p className="mt-3 max-w-2xl text-base text-zinc-400 leading-relaxed">
-            40 diagnostic questions across four domains. See where you stand — and where to improve.
+            20 diagnostic questions across four domains. See where you stand — and where to improve.
           </p>
+        </div>
+
+        {/* ── About this quiz ── */}
+        <div className="mb-10 sm:mb-12 rounded-2xl border border-violet-500/20 bg-violet-500/5 p-6 sm:p-8">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-violet-400">About this assessment</p>
+          <h2 className="mb-3 text-xl font-semibold text-zinc-100">What this quiz is for</h2>
+          <p className="mb-6 max-w-3xl text-sm leading-6 text-zinc-400">
+            This is a professional self-assessment for legal practitioners. It measures how you actually use AI in your work — not how much you know about it in theory. The goal is to give you an honest, evidence-based picture of your AI competency across four domains, identify where you carry the most risk, and suggest concrete next steps. There are no right answers — only accurate ones.
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { label: "Who it’s for",    value: "Legal professionals in the UK — from paralegals to partners, private practice to in-house." },
+              { label: "How long",        value: "Around 5–8 minutes. 20 focused questions covering real behaviours, scenarios, and self-assessment." },
+              { label: "What you get",    value: "A Capability Score, domain breakdown, one of 10 practitioner archetypes, and tailored next steps." },
+              { label: "How it’s scored", value: "Domain weights adjust for your role. High-risk behaviours trigger penalties scaled by your AI experience level." },
+            ].map(({ label, value }) => (
+              <div key={label} className="rounded-xl border border-violet-500/15 bg-zinc-900 p-4">
+                <p className="mb-1.5 text-xs font-semibold uppercase tracking-widest text-violet-400">{label}</p>
+                <p className="text-xs leading-5 text-zinc-400">{value}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         <AnimatePresence mode="wait">
@@ -1448,7 +1232,7 @@ export default function LegalTechAiQuiz() {
                 <CardHeader>
                   <CardTitle>Start the assessment</CardTitle>
                   <CardDescription>
-                    Profile information contextualises your scores and risk calculation. All fields are optional.
+                    AI experience, role, and organisation are required — they calibrate your domain weights and risk score. Name is optional.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -1462,21 +1246,27 @@ export default function LegalTechAiQuiz() {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-zinc-500 uppercase tracking-wide">AI experience</label>
+                      <label className="text-xs font-medium text-zinc-500 uppercase tracking-wide">
+                        AI experience <span className="text-red-400">*</span>
+                      </label>
                       <select value={profile.experience} onChange={(e) => setProfile({ ...profile, experience: e.target.value })} className={selectCls}>
                         <option value="">Select level</option>
                         <option>Beginner</option><option>Intermediate</option><option>Advanced</option>
                       </select>
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-zinc-500 uppercase tracking-wide">Role</label>
+                      <label className="text-xs font-medium text-zinc-500 uppercase tracking-wide">
+                        Role <span className="text-red-400">*</span>
+                      </label>
                       <select value={profile.role} onChange={(e) => setProfile({ ...profile, role: e.target.value })} className={selectCls}>
                         <option value="">Select role</option>
                         {roleOptions.map((r) => <option key={r}>{r}</option>)}
                       </select>
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-zinc-500 uppercase tracking-wide">Organisation</label>
+                      <label className="text-xs font-medium text-zinc-500 uppercase tracking-wide">
+                        Organisation <span className="text-red-400">*</span>
+                      </label>
                       <select value={profile.org} onChange={(e) => setProfile({ ...profile, org: e.target.value })} className={selectCls}>
                         <option value="">Select type</option>
                         {orgOptions.map((o) => <option key={o}>{o}</option>)}
@@ -1500,9 +1290,21 @@ export default function LegalTechAiQuiz() {
                     ))}
                   </div>
 
-                  <Button onClick={() => setStep("quiz")} size="lg" className="w-full sm:w-auto">
-                    Begin assessment <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      onClick={() => setStep("quiz")}
+                      size="lg"
+                      className="w-full sm:w-auto"
+                      disabled={!(profile.experience && profile.role && profile.org)}
+                    >
+                      Begin assessment <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                    {!(profile.experience && profile.role && profile.org) ? (
+                      <p className="text-xs text-zinc-500">Select AI experience, role, and organisation to begin.</p>
+                    ) : (
+                      <p className="text-xs text-zinc-600">Your answers are processed entirely in your browser and are never stored or shared.</p>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
@@ -1572,10 +1374,10 @@ export default function LegalTechAiQuiz() {
                     <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-teal-400">Professional Ethics & Duty of Care</p>
                     <div className="space-y-3">
                       {[
-                        { icon: <CheckCircle2 className="h-4 w-4 shrink-0 text-violet-400" />, title: "The lawyer remains responsible", body: "AI does not hold a practising certificate. Every output — right or wrong — carries your professional liability. Delegating to AI is not the same as delegating to a colleague.", srcs: [{ label: "AI Integration UK", key: "aiIntegrationUK" }, { label: "Terzidou, 2025", key: "terzidou_2025" }] },
-                        { icon: <ShieldAlert className="h-4 w-4 shrink-0 text-violet-400" />,  title: "Transparency with clients",      body: "Regulatory bodies including the SRA are developing guidance on AI disclosure obligations. Using AI without client knowledge may already breach professional conduct rules in some contexts.", srcs: [{ label: "LawtechUK B2C, 2025", key: "lawtechB2C_2025" }, { label: "Terzidou, 2025", key: "terzidou_2025" }, { label: "SRA, 2025", key: "sraSmallFirms" }] },
-                        { icon: <Brain className="h-4 w-4 shrink-0 text-violet-400" />,        title: "Bias is a legal risk",            body: "AI systems trained on historical legal data can reproduce systemic biases. In litigation, sentencing, and contract interpretation, biased outputs can cause real harm to real people.", srcs: [{ label: "Nielsen, 2024", key: "nielsen_2024" }, { label: "AI Integration UK", key: "aiIntegrationUK" }, { label: "LexisNexis Survey", key: "lexisnexis" }] },
-                        { icon: <Scale className="h-4 w-4 shrink-0 text-violet-400" />,        title: "Governance is not optional",     body: "Firms that lack AI policies expose themselves to regulatory action, professional indemnity claims, and reputational risk. Governance frameworks protect practitioners as much as clients.", srcs: [{ label: "Embracing Innovation", key: "embracingInnovation" }, { label: "AI Integration UK", key: "aiIntegrationUK" }] },
+                        { icon: <CheckCircle2 className="h-4 w-4 shrink-0 text-violet-400" />, title: "The lawyer remains responsible", body: "AI does not hold a practising certificate. Every output — right or wrong — carries your professional liability. Delegating to AI is not the same as delegating to a colleague.", srcs: [{ label: "SRA, 2025", key: "sraSmallFirms" }] },
+                        { icon: <ShieldAlert className="h-4 w-4 shrink-0 text-violet-400" />,  title: "Transparency with clients",      body: "Regulatory bodies including the SRA are developing guidance on AI disclosure obligations. Using AI without client knowledge may already breach professional conduct rules in some contexts.", srcs: [{ label: "LawtechUK B2C, 2025", key: "lawtechB2C_2025" }, { label: "SRA, 2025", key: "sraSmallFirms" }] },
+                        { icon: <Brain className="h-4 w-4 shrink-0 text-violet-400" />,        title: "Bias is a legal risk",            body: "AI systems trained on historical legal data can reproduce systemic biases. In litigation, sentencing, and contract interpretation, biased outputs can cause real harm to real people.", srcs: [{ label: "LexisNexis Survey", key: "lexisnexis" }] },
+                        { icon: <Scale className="h-4 w-4 shrink-0 text-violet-400" />,        title: "Governance is not optional",     body: "Firms that lack AI policies expose themselves to regulatory action, professional indemnity claims, and reputational risk. Governance frameworks protect practitioners as much as clients.", srcs: [{ label: "Thomson Reuters", key: "thomsonreuters2024" }] },
                       ].map(({ icon, title, body, srcs }) => (
                         <div key={title} className="flex gap-3.5 rounded-lg border border-zinc-800 bg-zinc-900 p-4">
                           <div className="mt-0.5">{icon}</div>
@@ -1589,7 +1391,7 @@ export default function LegalTechAiQuiz() {
                                   onClick={() => setSourceModal(SOURCES[key])}
                                   className="inline-flex items-center rounded border border-zinc-700 px-2 py-0.5 text-[10px] font-medium text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
                                 >
-                                  📄 {label}
+                                  {label}
                                 </button>
                               ))}
                             </div>
@@ -1887,7 +1689,7 @@ export default function LegalTechAiQuiz() {
                         {profile.name ? `${profile.name}'s profile` : "Your profile"}
                       </p>
                       <p className="text-xs text-violet-100">
-                        40 questions · 4 domains · Capability score {scores.capability}/100
+                        20 questions · 4 domains · Capability score {scores.capability}/100
                         {(profile.role || profile.org) ? ` · Context risk ${scores.contextRisk}/100` : ""}
                       </p>
                     </div>
@@ -1969,7 +1771,9 @@ export default function LegalTechAiQuiz() {
                   <CardHeader>
                     <CardTitle>Domain breakdown</CardTitle>
                     <CardDescription>
-                      Four weighted domains forming the Capability Score: Usage 25% · Verification 30% · Risk 25% · Governance 20%.
+                      {profile.role
+                        ? `Weights adjusted for ${profile.role}: Usage ${Math.round(scores.domainWeights.usage * 100)}% · Verification ${Math.round(scores.domainWeights.verification * 100)}% · Risk ${Math.round(scores.domainWeights.riskAwareness * 100)}% · Governance ${Math.round(scores.domainWeights.governance * 100)}%.`
+                        : "Four weighted domains forming the Capability Score."}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -1982,7 +1786,7 @@ export default function LegalTechAiQuiz() {
 
                     <div className="rounded-lg border border-zinc-800 bg-zinc-800/30 p-3 text-xs leading-5 text-zinc-500">
                       <span className="font-medium text-zinc-400">Capability formula: </span>
-                      (Usage × 0.25) + (Verification × 0.30) + (Risk × 0.25) + (Governance × 0.20) − penalties
+                      (Usage × {scores.domainWeights.usage}) + (Verification × {scores.domainWeights.verification}) + (Risk × {scores.domainWeights.riskAwareness}) + (Governance × {scores.domainWeights.governance}) − penalties
                     </div>
                   </CardContent>
                 </Card>
@@ -2149,11 +1953,6 @@ export default function LegalTechAiQuiz() {
         )}
       </AnimatePresence>
 
-      {/* ── News overlay ── */}
-      <AnimatePresence>
-        {showNews && <NewsOverlay onClose={() => setShowNews(false)} />}
-      </AnimatePresence>
-
       {/* ── Learn More overlay ── */}
       <AnimatePresence>
         {showLearnMore && (
@@ -2185,13 +1984,13 @@ export default function LegalTechAiQuiz() {
                 <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-violet-400">Overview</p>
                 <h1 className="mb-3 text-2xl font-semibold text-zinc-100">How the quiz works</h1>
                 <p className="mb-6 text-sm leading-6 text-zinc-400">
-                  The diagnostic measures competency across four domains using 40 questions — single choice, multi-select, and Likert scale.
-                  Every answer is scored 0–100 and weighted into a domain score. Domain scores combine into a single Capability Score,
-                  adjusted for red flag penalties. A separate Context Risk score is calculated from your role and organisation.
+                  The diagnostic measures competency across four domains using 20 questions — single choice, multi-select, and Likert scale.
+                  Every answer is scored 0–100 and weighted into a domain score. Domain weights are adjusted for your role.
+                  Domain scores combine into a single Capability Score, adjusted for red flag penalties. A separate Context Risk score is calculated from your role and organisation.
                 </p>
                 <div className="grid gap-3 sm:grid-cols-3">
                   {[
-                    { label: "Questions", value: "40", sub: "across 4 sections" },
+                    { label: "Questions", value: "20", sub: "across 4 sections" },
                     { label: "Domains",   value: "4",  sub: "each scored 0–100" },
                     { label: "Archetypes", value: "10", sub: "possible outcomes" },
                   ].map(({ label, value, sub }) => (
@@ -2210,9 +2009,9 @@ export default function LegalTechAiQuiz() {
                 <h2 className="mb-4 text-lg font-semibold text-zinc-100">How answers are scored</h2>
                 <div className="space-y-3">
                   {[
-                    { type: "Single choice", qs: "22 questions", desc: "Each option maps to an explicit score (0–100) defined in the scoring table. Options are ordered from least to most capable behaviour." },
-                    { type: "Likert scale", qs: "16 questions", desc: "Rated 1–5. Maps to 0 / 25 / 50 / 75 / 100. Some questions are reverse-scored — e.g. 'How likely are you to trust AI before checking?' where 5 (always trust) = 0 points." },
-                    { type: "Multi-select", qs: "4 questions", desc: "Scored as a proportion of valid options selected (task breadth, risk identification, controls awareness) or as a penalty model (data sensitivity — starting at 100 with deductions per sensitive item selected)." },
+                    { type: "Single choice", qs: "12 questions", desc: "Each option maps to an explicit score (0–100) defined in the scoring table. Options are ordered from least to most capable behaviour." },
+                    { type: "Likert scale", qs: "5 questions", desc: "Rated 1–5. Maps to 0 / 25 / 50 / 75 / 100. Questions cover prompting comfort, hallucination awareness, confidentiality confidence, escalation knowledge, and tool approval awareness." },
+                    { type: "Multi-select", qs: "3 questions", desc: "Scored as a proportion of valid options selected (task breadth Q3, risk identification Q12) or as a penalty model (data sensitivity Q13 — starting at 100 with deductions per sensitive category entered into AI)." },
                   ].map(({ type, qs, desc }) => (
                     <div key={type} className="flex gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4">
                       <div className="min-w-[130px]">
@@ -2232,45 +2031,43 @@ export default function LegalTechAiQuiz() {
                 <div className="space-y-4">
                   {[
                     {
-                      domain: "Usage Sophistication", weight: "25%", icon: <Briefcase className="h-4 w-4" />, color: "text-violet-400 border-violet-500/30 bg-violet-500/5",
+                      domain: "Usage Sophistication", weight: "varies by role", icon: <Briefcase className="h-4 w-4" />, color: "text-violet-400 border-violet-500/30 bg-violet-500/5",
                       subs: [
-                        { name: "Frequency",             w: "20%", qs: "Q2, Q7" },
-                        { name: "Task Breadth",          w: "25%", qs: "Q3" },
-                        { name: "Workflow Integration",  w: "25%", qs: "Q4, Q8" },
-                        { name: "Tool Type",             w: "15%", qs: "Q1, Q10" },
-                        { name: "Prompting Capability",  w: "15%", qs: "Q5, Q6" },
+                        { name: "Tool Access Level",     w: "30%", qs: "Q1" },
+                        { name: "Usage Frequency",       w: "30%", qs: "Q2" },
+                        { name: "Task Breadth",          w: "20%", qs: "Q3" },
+                        { name: "Workflow Integration",  w: "15%", qs: "Q4" },
+                        { name: "Prompting Comfort",     w: "5%",  qs: "Q5" },
                       ],
                     },
                     {
-                      domain: "Verification Discipline", weight: "30%", icon: <Brain className="h-4 w-4" />, color: "text-blue-400 border-blue-500/30 bg-blue-500/5",
+                      domain: "Verification Discipline", weight: "varies by role", icon: <Brain className="h-4 w-4" />, color: "text-blue-400 border-blue-500/30 bg-blue-500/5",
                       subs: [
-                        { name: "Citation Verification",         w: "30%", qs: "Q11, Q14" },
-                        { name: "Legal Validation",              w: "25%", qs: "Q12, Q29" },
-                        { name: "Jurisdiction Checking",         w: "10%", qs: "Q15, Q19" },
-                        { name: "Misleading Output Recognition", w: "15%", qs: "Q16" },
-                        { name: "Trust Before Checking (rev.)",  w: "10%", qs: "Q13, Q17" },
-                        { name: "Scenario Performance",          w: "10%", qs: "Q18, Q20" },
+                        { name: "Citation Handling",           w: "35%", qs: "Q6" },
+                        { name: "Legal Validation",            w: "30%", qs: "Q7" },
+                        { name: "Reliance (pre-reversed)",     w: "10%", qs: "Q8" },
+                        { name: "Scenario: Unread Citations",  w: "15%", qs: "Q9" },
+                        { name: "Scenario: Contract Revision", w: "10%", qs: "Q10" },
                       ],
                     },
                     {
-                      domain: "Legal Risk Awareness", weight: "25%", icon: <ShieldAlert className="h-4 w-4" />, color: "text-red-400 border-red-500/30 bg-red-500/5",
+                      domain: "Legal Risk Awareness", weight: "varies by role", icon: <ShieldAlert className="h-4 w-4" />, color: "text-red-400 border-red-500/30 bg-red-500/5",
                       subs: [
-                        { name: "Hallucination Awareness",      w: "20%", qs: "Q21" },
-                        { name: "Risk Identification",          w: "25%", qs: "Q22, Q30" },
-                        { name: "Confidentiality Awareness",    w: "25%", qs: "Q23, Q26" },
-                        { name: "Tool Limitation Awareness",    w: "10%", qs: "Q25" },
-                        { name: "Safe Prompting Confidence",    w: "20%", qs: "Q24, Q28" },
+                        { name: "Hallucination Awareness",       w: "25%", qs: "Q11" },
+                        { name: "Risk Identification",           w: "25%", qs: "Q12" },
+                        { name: "Data Sensitivity",              w: "25%", qs: "Q13" },
+                        { name: "Confidentiality Confidence",    w: "15%", qs: "Q14" },
+                        { name: "Scenario: Safe Prompting",      w: "10%", qs: "Q15" },
                       ],
                     },
                     {
-                      domain: "Governance Alignment", weight: "20%", icon: <Scale className="h-4 w-4" />, color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/5",
+                      domain: "Governance Alignment", weight: "varies by role", icon: <Scale className="h-4 w-4" />, color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/5",
                       subs: [
-                        { name: "Policy Awareness",          w: "20%", qs: "Q31, Q39, Q40" },
-                        { name: "Approved Tool Awareness",   w: "20%", qs: "Q9, Q34, Q35" },
-                        { name: "Training",                  w: "15%", qs: "Q32" },
-                        { name: "Escalation Knowledge",      w: "15%", qs: "Q33, Q27" },
-                        { name: "Control Expectations",      w: "15%", qs: "Q36, Q38" },
-                        { name: "Explainability",            w: "15%", qs: "Q37" },
+                        { name: "Tool Selection Origin",     w: "20%", qs: "Q16" },
+                        { name: "Policy Existence",          w: "25%", qs: "Q17" },
+                        { name: "Training Received",         w: "20%", qs: "Q18" },
+                        { name: "Escalation Knowledge",      w: "20%", qs: "Q19" },
+                        { name: "Approved Tool Awareness",   w: "15%", qs: "Q20" },
                       ],
                     },
                   ].map(({ domain, weight, icon, color, subs }) => {
@@ -2300,13 +2097,54 @@ export default function LegalTechAiQuiz() {
                 </div>
               </div>
 
+              {/* Role-adjusted weights */}
+              <div>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-zinc-500">Role-adjusted weights</p>
+                <h2 className="mb-2 text-lg font-semibold text-zinc-100">Domain weights by role</h2>
+                <p className="mb-4 text-sm leading-6 text-zinc-400">
+                  The four domain weights in the Capability Score shift based on your declared role, reflecting different professional expectations and accountability levels.
+                </p>
+                <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-zinc-800 bg-zinc-800/60">
+                        <th className="px-3 py-2.5 text-left font-semibold text-zinc-400">Role</th>
+                        <th className="px-3 py-2.5 text-right font-semibold text-violet-400">Usage</th>
+                        <th className="px-3 py-2.5 text-right font-semibold text-blue-400">Verification</th>
+                        <th className="px-3 py-2.5 text-right font-semibold text-red-400">Risk</th>
+                        <th className="px-3 py-2.5 text-right font-semibold text-emerald-400">Governance</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-800">
+                      {[
+                        { role: "Junior / paralegal",    u: "30%", v: "30%", r: "25%", g: "15%" },
+                        { role: "Associate",             u: "25%", v: "30%", r: "25%", g: "20%" },
+                        { role: "Senior lawyer",         u: "20%", v: "30%", r: "25%", g: "25%" },
+                        { role: "Partner",               u: "15%", v: "25%", r: "25%", g: "35%" },
+                        { role: "In-house counsel",      u: "20%", v: "30%", r: "30%", g: "20%" },
+                        { role: "Other",                 u: "25%", v: "30%", r: "25%", g: "20%" },
+                      ].map(({ role, u, v, r, g }) => (
+                        <tr key={role} className="bg-zinc-900">
+                          <td className="px-3 py-2 text-zinc-300">{role}</td>
+                          <td className="px-3 py-2 text-right font-medium tabular-nums text-violet-300">{u}</td>
+                          <td className="px-3 py-2 text-right font-medium tabular-nums text-blue-300">{v}</td>
+                          <td className="px-3 py-2 text-right font-medium tabular-nums text-red-300">{r}</td>
+                          <td className="px-3 py-2 text-right font-medium tabular-nums text-emerald-300">{g}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
               {/* Capability formula */}
               <div>
                 <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-zinc-500">Capability score</p>
                 <h2 className="mb-4 text-lg font-semibold text-zinc-100">Final formula & tiers</h2>
                 <div className="mb-4 rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-4 font-mono text-sm text-zinc-300">
-                  Capability = (Usage × 0.25) + (Verification × 0.30) + (Risk × 0.25) + (Governance × 0.20) − penalties
+                  Capability = (Usage × w₁) + (Verification × w₂) + (Risk × w₃) + (Governance × w₄) − penalties
                 </div>
+                <p className="mb-4 text-xs text-zinc-500">Where w₁–w₄ are the role-adjusted weights from the table above.</p>
                 <div className="grid grid-cols-5 gap-2">
                   {[
                     { tier: "High Risk", range: "0–25",  cls: "border-red-500/30 bg-red-500/10 text-red-400" },
@@ -2328,24 +2166,25 @@ export default function LegalTechAiQuiz() {
                 <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-red-400">Red flags</p>
                 <h2 className="mb-2 text-lg font-semibold text-zinc-100">Penalty system</h2>
                 <p className="mb-4 text-sm leading-6 text-zinc-400">
-                  Six behaviours trigger automatic score penalties regardless of overall performance. They represent the highest-risk practitioner behaviours identified in the research literature.
+                  Six behaviours trigger automatic score penalties. The first four are <span className="font-semibold text-zinc-300">behavioural</span> — they scale with your declared AI experience: Beginner 60% of base, Intermediate 80%, Advanced 100%. The last two are <span className="font-semibold text-zinc-300">structural</span> (role/org context) and apply at the full base rate regardless of experience.
                 </p>
                 <div className="divide-y divide-zinc-800 overflow-hidden rounded-xl border border-zinc-800">
                   {[
-                    { flag: "Uses AI citations without checking",       trigger: "Q11 = 0",             penalty: "−20 pts" },
-                    { flag: "Inputs sensitive or privileged data",       trigger: "Q23 includes high-risk items", penalty: "−20 pts" },
-                    { flag: "No validation of AI legal reasoning",       trigger: "Q12 = 0",             penalty: "−15 pts" },
-                    { flag: "Unaware of approved tools",                 trigger: "Q35 ≤ 25",            penalty: "−10 pts" },
-                    { flag: "No policy awareness in large organisation", trigger: "Q31 = 0 + large org", penalty: "−10 pts" },
-                    { flag: "Senior role with no escalation awareness",  trigger: "Q33 ≤ 25 + senior role", penalty: "−10 pts" },
-                  ].map(({ flag, trigger, penalty }) => (
+                    { flag: "Uses AI citations without checking",       trigger: "Q6 = 0",              penalty: "−20 pts *", structural: false },
+                    { flag: "Inputs sensitive or privileged data",       trigger: "Q13 sensitive items",  penalty: "−20 pts *", structural: false },
+                    { flag: "No validation of AI legal reasoning",       trigger: "Q7 = 0",              penalty: "−15 pts *", structural: false },
+                    { flag: "Unaware of approved tools",                 trigger: "Q20 ≤ 25",            penalty: "−10 pts *", structural: false },
+                    { flag: "No policy awareness in large organisation", trigger: "Q17 = 0 + large org", penalty: "−10 pts",   structural: true  },
+                    { flag: "Senior role with no escalation awareness",  trigger: "Q19 ≤ 25 + senior",  penalty: "−10 pts",   structural: true  },
+                  ].map(({ flag, trigger, penalty, structural }) => (
                     <div key={flag} className="grid grid-cols-[1fr_160px_80px] items-center bg-zinc-900 px-4 py-3 text-xs">
                       <span className="text-zinc-300">{flag}</span>
                       <span className="text-zinc-500">{trigger}</span>
-                      <span className="text-right font-bold text-red-400">{penalty}</span>
+                      <span className={`text-right font-bold ${structural ? "text-orange-400" : "text-red-400"}`}>{penalty}</span>
                     </div>
                   ))}
                 </div>
+                <p className="mt-2 text-[10px] text-zinc-600">* Scaled by experience: Beginner ×0.60 · Intermediate ×0.80 · Advanced ×1.00</p>
               </div>
 
               {/* Context risk */}
@@ -2353,10 +2192,22 @@ export default function LegalTechAiQuiz() {
                 <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-zinc-500">Context risk</p>
                 <h2 className="mb-2 text-lg font-semibold text-zinc-100">Role & organisation multipliers</h2>
                 <p className="mb-4 text-sm leading-6 text-zinc-400">
-                  Context Risk does not affect the Capability Score. It reframes the same score through the lens of professional stakes — a Partner at a large firm operating at 60% capability carries more systemic risk than a junior at a solo practice at the same score.
+                  Context Risk does not affect the Capability Score. It reframes the same score through the lens of professional stakes — a Partner at a large firm operating at 60% capability carries more systemic risk than a junior at a solo practice at the same score. Three amplifiers add fixed points to the base formula where domain gaps compound contextual exposure.
                 </p>
                 <div className="mb-3 rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-4 font-mono text-sm text-zinc-300">
-                  Context Risk = (100 − Capability) × role multiplier × org multiplier
+                  Context Risk = (100 − Capability) × role multiplier × org multiplier + amplifiers
+                </div>
+                <div className="mb-3 divide-y divide-zinc-800 overflow-hidden rounded-lg border border-zinc-800">
+                  {[
+                    { condition: "Partner or Senior + Governance < 50", effect: "+8 pts" },
+                    { condition: "In-house counsel + Risk Awareness < 50", effect: "+8 pts" },
+                    { condition: "Verification score < 40", effect: "+6 pts" },
+                  ].map(({ condition, effect }) => (
+                    <div key={condition} className="flex items-center justify-between bg-zinc-900 px-3 py-2 text-xs">
+                      <span className="text-zinc-400">{condition}</span>
+                      <span className="font-bold tabular-nums text-orange-400">{effect}</span>
+                    </div>
+                  ))}
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
@@ -2485,11 +2336,18 @@ export default function LegalTechAiQuiz() {
                       url: "https://www.thomsonreuters.com/content/dam/ewp-m/documents/thomsonreuters/en/pdf/reports/tr4322226_rgb.pdf",
                     },
                     {
+                      title: "Legal Trends Report 2024",
+                      author: "Clio",
+                      year: "2024",
+                      note: "Annual benchmarking report on UK legal practice trends, including AI adoption rates among solicitors and law firms.",
+                      url: "https://www.clio.com/uk/blog/ai-technology-trends/",
+                    },
+                    {
                       title: "Lawtech UK Investment Snapshot: H2 2025",
                       author: "LawtechUK",
                       year: "2026",
-                      note: "Tracks UK lawtech funding and acquisition activity across 2025; total investment £188.8m.",
-                      url: null,
+                      note: "Tracks UK lawtech funding and acquisition activity across 2025; total investment £188.8m, a 35% increase on 2024.",
+                      url: "https://lawtechuk.io/reports/lawtechuk-investment-snapshot",
                     },
                     {
                       title: "Over 40% of agentic AI projects will be scrapped by 2027, Gartner says",
@@ -2497,13 +2355,6 @@ export default function LegalTechAiQuiz() {
                       year: "2025",
                       note: "Gartner prediction that over 40% of agentic AI projects will be abandoned by 2027 due to inadequate governance.",
                       url: "https://www.reuters.com/business/over-40-agentic-ai-projects-will-be-scrapped-by-2027-gartner-says-2025-06-25/",
-                    },
-                    {
-                      title: "AI Integration in UK Professional Services: Adoption, Risk and Governance",
-                      author: "UK Professional Services AI Research Group",
-                      year: "2025",
-                      note: "33% of legal AI users cite accidental bias as a concern; data on client consent practices and AI disclosure obligations in the UK legal sector; governance policy gaps.",
-                      url: null,
                     },
                     {
                       title: "LawtechUK Consumer-Facing Legal Technology: Adoption and Trust Report 2025",
@@ -2525,20 +2376,6 @@ export default function LegalTechAiQuiz() {
                       note: "SRA guidance on AI use by solicitors; client confidentiality obligations when using AI tools; anticipated disclosure requirements; regulatory framework for AI-processed client data.",
                       url: "https://www.sra.org.uk",
                     },
-                    {
-                      title: "AI in Legal Practice: Liability, Sanctions and the Practising Certificate Gap",
-                      author: "Maria Terzidou",
-                      year: "2025",
-                      note: "Analysis of court sanctions against solicitors for AI-generated fake citations; professional liability framework for AI outputs; the practising certificate gap in AI accountability.",
-                      url: null,
-                    },
-                    {
-                      title: "Embracing Innovation: AI Governance in UK Professional Services",
-                      author: "UK Professional Services Forum",
-                      year: "2025",
-                      note: "Survey finding that nearly half of professional services firms have no formal AI policy; analysis of PI/D&O exposure from ungoverned AI use; governance framework recommendations.",
-                      url: null,
-                    },
                   ],
                 },
                 {
@@ -2554,17 +2391,10 @@ export default function LegalTechAiQuiz() {
                     },
                     {
                       title: "Large Legal Fictions: Profiling Legal Hallucinations in Large Language Models",
-                      author: "Dahl, M. et al.",
+                      author: "Dahl, M., Magesh, V., Suzgun, M., & Ho, D.E.",
                       year: "2024",
-                      note: "Foundational study establishing hallucination rates of 58–82% in general-purpose LLMs on legal queries.",
-                      url: null,
-                    },
-                    {
-                      title: "Algorithmic Fairness in Criminal Justice Risk Assessment: A Systematic Review",
-                      author: "Jakob Nielsen et al.",
-                      year: "2024",
-                      note: "Evidence that AI risk-assessment tools in criminal justice settings have exacerbated racial disparities; analysis of COMPAS and analogous tools; recommendations for independent bias auditing.",
-                      url: null,
+                      note: "Foundational study establishing hallucination rates of 58–88% in general-purpose LLMs on legal queries (58% with GPT-4, up to 88% with Llama 2). Published in the Journal of Legal Analysis.",
+                      url: "https://doi.org/10.1093/jla/laae003",
                     },
                   ],
                 },
@@ -2628,12 +2458,6 @@ export default function LegalTechAiQuiz() {
                 </div>
               ))}
 
-              <div className="rounded-xl border border-zinc-800 bg-zinc-800/30 p-5 text-xs leading-6 text-zinc-500">
-                <span className="font-semibold text-zinc-400">Disclaimer: </span>
-                Quantitative figures presented in the tool that are not attributed to a specific source are illustrative
-                benchmarks compiled for demonstration purposes. They are intended to represent plausible sector-level
-                patterns and should not be cited as empirical data.
-              </div>
             </main>
           </motion.div>
         )}
